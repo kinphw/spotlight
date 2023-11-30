@@ -12,13 +12,13 @@ def obj2str(df:pd.DataFrame) -> None:
         if df[column].dtype == 'object':
             df[column] = df[column].astype(str) # Call by Object Refenece이므로 Return 불필요    
 
-def autoMap(df:pd.DataFrame, tgtdir:str)->pd.DataFrame :
+def autoMap(df:pd.DataFrame)->pd.DataFrame :
 
     print("Auto Mapping. Read ImportMAP.xlsx")
     #filenameImportMap = "ImportMAP.xlsx"
     #filenameImportMap = glob.glob(tgtdir+"/"+filenameImportMap)
     filenameImportMap = myfd.askopenfilename("MAP파일 선택")    
-    dfMap = pd.read_excel(filenameImportMap)
+    dfMap = pd.read_excel(filenameImportMap, sheet_name='MAP_GL')
 
     ## a. MAP 대상 먼저 전처리
     dfMapMap = dfMap[dfMap['방법'] == 'MAP']
