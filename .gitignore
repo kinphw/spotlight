@@ -18,6 +18,7 @@ dist/*
 test.py
 test_sql.py
 test.ipynb
+test.txt
 bkup/*
 ColumnLength.xlsx
 
