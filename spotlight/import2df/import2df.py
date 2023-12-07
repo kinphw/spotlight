@@ -4,11 +4,11 @@ import spotlight.common.myFileDialog as myfd
 from spotlight.common.ErrRetry import ErrRetry
 
 class Import2Df:    
-    def run(cls):
-        return cls.importTxt()
+    def run(self):
+        return self.importTxt()
 
     @ErrRetry
-    def importTxt(cls) -> pd.DataFrame:       
+    def importTxt(self) -> pd.DataFrame:       
         path = myfd.askopenfilename("Text 파일을 선택하세요. ")
         sep = input("Seperator? (기본값 \\t)>>") or '\t'
         encod = input("인코딩? (cp949)>>") or 'cp949'        

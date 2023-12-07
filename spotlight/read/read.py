@@ -3,7 +3,7 @@ import pandas as pd
 import spotlight.common.myFileDialog as myfd
 
 class ReadColumnLength:
-    def run(cls):
+    def run(self):
         path = myfd.askopenfilename("Select a sample GL file")
         encoding = input("encoding, 기본값 cp949>>") or 'cp949'
         sep = input("sep, 기본값 tsv>>") or '\t'
