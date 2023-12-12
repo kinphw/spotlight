@@ -3,20 +3,24 @@ import pandas as pd
 from spotlight.read import runReadColumnLength
 from spotlight.txt2db import runTxt2Db
 from spotlight.concatText import runConcatText
+from spotlight.concatText import runConcatText
+from spotlight.concatText.concatTextTest import ConcatTextTest
 from spotlight.import2df.import2df import runImport2Df
 from spotlight.save.save import Saver
 from spotlight.automap.automap import AutoMap
+from spotlight.modify.modify import Modifier
 
 class Spotlight:
 
     df:pd.DataFrame
 
-    def run(cls):
+    def run(self):
 
         text =  "\n#"*10+"\n"
         text += "\nPreprocessing\n"    
         text += "11. Excel to Text\n"    
         text += "12. concatenate text\n"    
+        text += "13. check text header (TEST)\n"    
 
         text += "\nUSE SQL\n"    
         text += "21. To Insert to SQL, Read columns'length\n"
@@ -50,19 +54,23 @@ class Spotlight:
                 
                 case '11': print("USE VBA...(추후 연동예정)")
                 case '12': runConcatText()
+                case '13': ConcatTextTest().run()
 
                 case '21': runReadColumnLength()
                 case '22': print("USE mySQL")
                 case '23': runTxt2Db()
 
-                case '31': cls.df = runImport2Df()
-                case '32': cls.df = AutoMap().autoMap(cls.df)
+                case '31': self.df = runImport2Df()
+                case '32': self.df = AutoMap().autoMap(self.df)
+                case '33':
+                    md = Modifier(self.df) #의존성 주입
+                    md.run()
 
-                case '41': Saver().save(cls.df)
+                case '41': Saver().save(self.df)
 
                 case '90':
                     print("DEBUG NOW") #여기다 BREAKPOINT를 걸면 수기 디버깅가능
-                case '99': print(cls.df.head(10))
+                case '99': print(self.df.head(10))
 
                 case _: print("Retry"); continue
 

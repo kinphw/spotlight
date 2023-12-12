@@ -27,8 +27,8 @@ class ConcatText:
         cls.concat(cls.bHeader)
         print("DONE")
 
-    def getFiles(cls):
-        path = myfd.askdirectory("합칠 텍스트파일이 있는 경로명")        
+    def getFiles(cls, msg:str = "합칠 텍스트 파일이 있는 경로명"):
+        path = myfd.askdirectory(msg)        
         ext = input("확장자(tsv)>>") or 'tsv'        
         cls.liTgt = glob.glob(path + '/*.'+ext)    #result.txt 생성 앞에 해야함
 
@@ -68,9 +68,8 @@ class ConcatText:
         fileNew.close()
         pbar.close()
 
-
 def runConcatText():
     ConcatText().run()
 
 if(__name__ == "__main__"):
-    runConcatText()  
+    runConcatText()

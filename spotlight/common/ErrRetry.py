@@ -12,6 +12,14 @@ class ErrRetry:
 
         # return self.func(*arg, **kwarg) # TO DEBUG
 
+def ErrRetryF(func):
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(e)
+    return wrapper
+
 @ErrRetry
 def Test():
     print("a")
