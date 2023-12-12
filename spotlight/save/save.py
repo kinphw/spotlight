@@ -2,7 +2,7 @@ import pandas as pd
 import tqdm
 
 class Saver:
-    def save(cls, df:pd.DataFrame) -> None:
+    def save(self, df:pd.DataFrame) -> None:
 
         path = input("저장할 Text filename을 지정하세요(기본값 result.tsv)>>") or 'result.tsv'        
         encod = input("인코딩? (cp949)>>") or 'utf8'
