@@ -2,7 +2,12 @@ import pandas as pd
 
 import spotlight.common.myFileDialog as myfd
 
+from spotlight.common.ErrRetry import ErrRetryF
+
+
 class AutoMap:
+
+    @ErrRetryF
     def autoMap(self, df:pd.DataFrame)->pd.DataFrame : 
 
         print("Auto Mapping. Read 매핑파일")

@@ -6,12 +6,24 @@ from spotlight.common.ErrRetry import ErrRetry
 from spotlight.common.common import mapcount
 
 class Import2Df:    
-    def run(self):
-        return self.importTxt()
+    def run(self, msg:str = "") -> pd.DataFrame:
+        
+        help = "1. import txt\n"
+        help += "2. import parquet\n"
+        help += "3. import pickle\n"
+        help += "4. import Excel\n"        
+        print(help)
+        flag = input(">>")
+        match(flag):
+            case '1': return self._importTxt(msg)
+            case '2': return self._importParquet(msg)
+            case '3': return self._importPickle(msg)
+            case '4': return self._importExcel(msg)            
+            case _: print("Wrong"); pass
 
     @ErrRetry
-    def importTxt(self) -> pd.DataFrame:       
-        path = myfd.askopenfilename("Text 파일을 선택하세요. ")
+    def _importTxt(self, msg:str = "Text 파일을 선택하세요.") -> pd.DataFrame:       
+        path = myfd.askopenfilename(msg)
         sep = input("Seperator? (기본값 \\t)>>") or '\t'
         encod = input("인코딩? (cp949)>>") or 'cp949'        
         
@@ -27,8 +39,20 @@ class Import2Df:
         pbar.close()
         return df
 
-def runImport2Df():
-    return Import2Df().run()
+    def _importParquet(self, msg:str = "Select parquet") -> pd.DataFrame:
+        path = myfd.askopenfilename(msg)
+        return pd.read_parquet(path)
+
+    def _importPickle(self, msg:str = "Select pickle") -> pd.DataFrame:
+        path = myfd.askopenfilename(msg)
+        return pd.read_pickle(path)
+
+    def _importExcel(self, msg:str = "Select Excel") -> pd.DataFrame:
+        path = myfd.askopenfilename(msg)
+        return pd.read_excel(path)
+
+def runImport2Df(msg:str = "") -> pd.DataFrame:
+    return Import2Df().run(msg)
 
 if __name__=='__main__':
     runImport2Df()

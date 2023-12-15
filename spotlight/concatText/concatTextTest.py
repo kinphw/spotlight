@@ -1,7 +1,7 @@
 from spotlight.concatText.concatText import ConcatText
+from spotlight.common.ErrRetry import ErrRetryF
 # 함수부
 
-#TEST 목적 상속
 class ConcatTextTest(ConcatText): #INHERIT
 
     def run(cls): #OVERIDE
@@ -16,10 +16,25 @@ class ConcatTextTest(ConcatText): #INHERIT
         cls.concat()
         print("DONE")
 
+    @ErrRetryF
     def concat(cls, bHeader:bool = None): #OVERRIDE        
         print("총",len(cls.liTgt),"개 파일에 대해 헤더 순환출력")        
-        for file in cls.liTgt:                                              
-            fileOld = open(file, 'rt', encoding=cls.encodingOld)
-            print(file+"",end=":\n")
-            print(fileOld.readline())
-            fileOld.close()
+
+        #파일로 출력하도록 변경 : fileResult
+        fileResultName = 'ColumnTestResult.txt'
+        fileResult = open(fileResultName, mode='tw', encoding='utf8')
+
+        for fileName in cls.liTgt:                                              
+
+            fileResult.write(fileName)
+            fileResult.write('\n')
+
+            fileNow = open(fileName, 'rt', encoding=cls.encodingOld)           
+
+            fileResult.write(fileNow.readline()) #여기는 \n이 포함됨?
+
+            fileNow.close()
+
+        fileResult.close()
+
+
