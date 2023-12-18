@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = 'ExcelPar'
-version = '0.1.8'
-description = 'Analyze by python, and create Excel PAR'
+name = 'Spotlight'
+version = '0.0.1'
+description = 'auto-preprocess GL to upload spotlight'
 readme = "README.md"
 authors = [
     {name ="Sgt. Park", email="kinphw@naver.com"},
@@ -13,9 +13,10 @@ authors = [
 
 #Except Built-in Module
 dependencies = [
-    "openpyxl >= 3.1.2",    
     "pandas >= 2.1.2",
-    "numpy >= 1.26.1",
-    "tqdm >= 4.66.1",
-    "clipboard >= 0.0.4",
+    "tqdm >= 4.661",
+    "numpy >= 1.26.2",
 ]
+
+
+    

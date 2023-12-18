@@ -11,10 +11,13 @@ class DbCon:
 
     def connect(cls, flag:str = 'mysql', dbName : str = 'spotlight') -> sqlalchemy.Engine:
 
+        mySQL_ID = input("ID? (DBMS)>>")
+        mySQL_PW = input("Password? (DBMS)>>")
+
         if flag=="mysql":
-            mySQL_ID = "root"
-            mySQL_PW = "genius"            
-            mySQL_DB = 'spotlight'
+            #mySQL_ID = ""
+            #mySQL_PW = ""
+            #mySQL_DB = 'spotlight'
             mySQL_DB = dbName
             #MySQL에 연결하는 경우
             engine = sqlalchemy.create_engine("mysql+mysqldb://"+mySQL_ID+":"+mySQL_PW+"@127.0.0.1/"+mySQL_DB+"?charset=utf8")
