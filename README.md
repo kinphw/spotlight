@@ -2,7 +2,7 @@
 
 ## Ver
 
-v0.0.7 DD 231219
+v0.0.8 DD 231219
 
 ## 목적
 
@@ -10,9 +10,9 @@ Spotlight upload를 위한 정형화된 전처리 자동화
 
 ## 작동방법
 
-pip install spotlighter
-import spotlight as sl
-sl.run()
+pip install spotlighter  
+import spotlight as sl  
+sl.run()  
 
 ## 주요기능
 

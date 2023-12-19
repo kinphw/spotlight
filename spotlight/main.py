@@ -3,7 +3,6 @@ import pandas as pd
 from spotlight.read import runReadColumnLength
 from spotlight.txt2db import runTxt2Db
 from spotlight.concatText import runConcatText
-from spotlight.concatText import runConcatText
 from spotlight.concatText.concatTextTest import ConcatTextTest
 from spotlight.import2df.import2df import runImport2Df
 from spotlight.save.save import Saver
@@ -72,9 +71,7 @@ class Spotlight(ProtoABSSelector):
 
                 case '31': self.df = runImport2Df()
                 case '32': self.df = AutoMap().autoMap(self.df)
-                case '33':
-                    md = Modifier(self.df) #의존성 주입
-                    md.run()
+                case '33': Modifier(self.df).run()
                 case '34': ReconGL(self.df).run()
 
                 case '41': Saver(self.df).run()
