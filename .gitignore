@@ -20,6 +20,7 @@ test_sql.py
 test.ipynb
 test.txt
 bkup/*
+logs/*
 ColumnLength.xlsx
 
 #oldver
