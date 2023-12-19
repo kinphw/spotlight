@@ -85,9 +85,9 @@ class Spotlight(ProtoABSSelector):
                 case '99': print(self.df.head(10))
                 case _: print("Retry"); continue
 
-def runMain(): 
+def run(): 
     spot = Spotlight()
     spot.run()
 
 if __name__=="__main__":
-    runMain()
+    run()

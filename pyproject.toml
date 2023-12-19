@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = 'spotlighter'
-version = '0.0.6'
+version = '0.0.7'
 description = 'auto-preprocess GL to upload spotlight'
 readme = "README.md"
 authors = [
