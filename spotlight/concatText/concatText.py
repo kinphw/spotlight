@@ -3,7 +3,6 @@
 
 # 전역선언부
 import os
-import glob
 import tqdm
 import spotlight.common.myFileDialog as myfd
 

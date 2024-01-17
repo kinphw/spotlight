@@ -1,4 +1,6 @@
 #DATAFRAME MERGE
+#240117 : 단순 concat도 구현
+
 import pandas as pd
 
 from spotlight.common.ErrRetry import ErrRetryF
@@ -29,6 +31,7 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
         text += "12. Set DF2\n"
         text += "21. MODIFY\n"
         text += "31. Join(Merge) DF1 & DF2\n"
+        text += "32. Simple Concat DF1 & DF2\n" #240117
         text += "41. Export DFJoin to textfile\n"
         text += "42. Connect DFJoin to Main Mode (이어서 바로 작업할 수 있게)\n\n"
         text += "50. Select DF(1,2,Join 중에) => MODIFY, Export, Connect와 연계됨\n\n"
@@ -62,9 +65,17 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
                 case '31': 
                     self._merge()
                     self._selectDF('Join')
+                case '32': 
+                    self._concat()
+                    self._selectDF('Join')                    
 
                 case '41': Saver(self.df).run()
-                case '42': print("Return to main mode with selected df"); return self.df
+                case '42': 
+                    print("Return to main mode with selected df")
+                    if isinstance(self.df,pd.DataFrame): return self.df
+                    else: print("아직 선택되지 않았습니다. dfJoin을 반환합니다."); return self.dfJoin
+
+                case '50': self._selectDF()
 
                 case '90':
                     print("DEBUG NOW") #여기다 BREAKPOINT를 걸면 수기 디버깅가능
@@ -152,3 +163,12 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
             case _: print("잘못된 입력입니다."); return
         print("현재 선택된 df:"+self.flag)
         
+    def _concat(self) -> None: #240117
+        
+        self.dfJoin = pd.concat([self.dfA, self.dfB])                
+
+        print("dfA 행수 : ",self.dfA.shape[0])
+        print("dfB 행수 : ",self.dfB.shape[0])
+        print("dfJoin 행수 : ",self.dfJoin.shape[0])        
+
+        print("DONE")    

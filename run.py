@@ -1,2 +1,2 @@
 import spotlight as sl
-sl.runMain()
+sl.run()

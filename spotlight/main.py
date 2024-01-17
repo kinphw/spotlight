@@ -1,8 +1,9 @@
+# v0.0.1 DD240117
+
 import pandas as pd
 
 from spotlight.read import runReadColumnLength
 from spotlight.txt2db import runTxt2Db
-from spotlight.concatText import runConcatText
 from spotlight.concatText import runConcatText
 from spotlight.concatText.concatTextTest import ConcatTextTest
 from spotlight.import2df.import2df import runImport2Df
@@ -11,6 +12,8 @@ from spotlight.save.savePart import SaverPart
 from spotlight.automap.automap import AutoMap
 from spotlight.modify.modify import Modifier
 from spotlight.recon.recon import ReconGL
+from spotlight.recon.calSum import CalSum
+from spotlight.recon.pivot import PivotMonthAcct
 from spotlight.merge.merge import Merger
 from spotlight.common.colors import Colors
 from spotlight.common.protoSelector import ProtoABSSelector
@@ -23,7 +26,7 @@ class Spotlight(ProtoABSSelector):
         text += "11. Excel to Text\n"    
         text += "12. concatenate text\n"    
         text += "13. check text header (TEST)\n"    
-        text += "14. Merge Text (i.e. BSEG+BKPF) (if already set df, automatically transferred to dfA)\n"    
+        text += "14. Merge or Concat Text (i.e. BSEG+BKPF) (if already set df, automatically transferred to dfA)\n"        
 
         text += Colors.RED + "\nUSE SQL\n" + Colors.END
         text += "21. To Insert to SQL, Read columns'length\n"
@@ -33,8 +36,10 @@ class Spotlight(ProtoABSSelector):
         text += Colors.RED + "\nMain Run\n" + Colors.END
         text += "31. Read text to dataframe\n"
         text += "32. Auto_MAP\n"
-        text += "33. Modify mode(After Auto_MAP)\n" #조정자는 별도 클래스로 분리 #아직 미구현        
-        text += "34. To recon G/L and T/B, export SUM(AMT LC)groupby Acct\n" #조정자는 별도 클래스로 분리 #아직 미구현        
+        text += "33. Modify mode(After Auto_MAP)\n"
+        text += "34. To recon G/L and T/B, export SUM(AMT LC)groupby Acct\n"
+        text += "35. export pivot table(월별/계정별)\n"
+        text += "36. Calculate Sum a specific column (합계검증목적)\n" #240117
 
         text += Colors.RED + "\nSave\n" + Colors.END
         text += "41. Save text(임시파일 Load는 31 활용)\n"
@@ -42,15 +47,16 @@ class Spotlight(ProtoABSSelector):
 
         text += Colors.RED + "\nGeneral\n" + Colors.END
         text += "90. MANUAL HANDLING - DEBUG\n"
-        text += "98. df.info()\n"        
-        text += "99. df.head(10)"
+        text += "91. df.info()\n"        
+        text += "92. df.head(10)\n"
+        text += "93. df.head(10) to_excel export\n"
 
         #####
         textMain = Colors.RED + "MAIN MODE : enter '?' to help / 'q' to exit" + Colors.END
 
         while True:
 
-            print("") #여기다 BREAK를 걸면 디버깅
+            print(Colors.RED + "Spotlight : v0.0.2" + Colors.END)
 
             print(textMain)
             flag = input(">>")
@@ -72,22 +78,23 @@ class Spotlight(ProtoABSSelector):
 
                 case '31': self.df = runImport2Df()
                 case '32': self.df = AutoMap().autoMap(self.df)
-                case '33':
-                    md = Modifier(self.df) #의존성 주입
-                    md.run()
+                case '33': Modifier(self.df).run()
                 case '34': ReconGL(self.df).run()
+                case '35': PivotMonthAcct(self.df).run()
+                case '36': CalSum(self.df).run() #240117 추가
 
                 case '41': Saver(self.df).run()
                 case '42': SaverPart(self.df).run()                
                 case '90':
                     print("DEBUG NOW") #여기다 BREAKPOINT를 걸면 수기 디버깅가능
-                case '98': self.df.info()
-                case '99': print(self.df.head(10))
+                case '91': self.df.info()
+                case '92': print(self.df.head(10))
+                case '93': self.df.head(10).to_excel("view.xlsx") ; print("view.xlsx 추출완료")
                 case _: print("Retry"); continue
 
-def runMain(): 
+def run(): 
     spot = Spotlight()
     spot.run()
 
 if __name__=="__main__":
-    runMain()
+    run()

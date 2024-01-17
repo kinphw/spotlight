@@ -2,11 +2,17 @@
 
 ## Ver
 
-v0.0.1 DD 231218
+v0.0.2 DD240117
 
 ## 목적
 
 Spotlight upload를 위한 정형화된 전처리 자동화
+
+## 작동방법
+
+pip install spotlighter  
+import spotlight as sl  
+sl.run()  
 
 ## 주요기능
 
@@ -62,3 +68,9 @@ Spotlight upload를 위한 정형화된 전처리 자동화
 
 ## Help
 FA&A 박형원
+
+## History
+
+v0.0.1 DD 231218  
+v0.0.2 DD 240117  
+추가 : 탭/개행 삭제기능, sum기능, head to excel 추출, 계정별/월별 금액 추출, Modin사용 import/export

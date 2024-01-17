@@ -12,6 +12,7 @@ class SaverPart(ProtoABSSelector):
     cName:str
     dfTmp:pd.DataFrame
 
+    @ErrRetryF
     def run(self):
         self.cName = self.selectColumn("기준컬럼 선택")
 
