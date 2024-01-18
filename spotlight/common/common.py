@@ -1,5 +1,4 @@
 import pandas as pd
-import glob
 import spotlight.common.myFileDialog as myfd
 import mmap
 

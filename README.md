@@ -2,7 +2,7 @@
 
 ## Ver
 
-v0.0.8 DD 231219
+v0.0.2 DD240117
 
 ## 목적
 
@@ -68,3 +68,9 @@ sl.run()
 
 ## Help
 FA&A 박형원
+
+## History
+
+v0.0.1 DD 231218  
+v0.0.2 DD 240117  
+추가 : 탭/개행 삭제기능, sum기능, head to excel 추출, 계정별/월별 금액 추출, Modin사용 import/export

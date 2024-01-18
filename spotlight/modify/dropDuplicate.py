@@ -1,4 +1,3 @@
-    
 import pandas as pd
 
 from spotlight.common.ErrRetry import ErrRetryF
@@ -12,7 +11,7 @@ class DropDuplicate:
 
     @ErrRetryF
     def run(self): #Drop Column
-        print("drop_duplicates() with imported df")                
+        print("drop_duplicates() with imported df")
         cntBefore = self.df.shape[0]
         self.df.drop_duplicates(inplace=True)
         cntAfter = self.df.shape[0]

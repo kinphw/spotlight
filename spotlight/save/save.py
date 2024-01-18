@@ -1,7 +1,8 @@
 #231214 : class var로 df를 지정한 후, run method에서 저장방법을 결정함
+import tqdm
 
 import pandas as pd
-import tqdm
+import modin.pandas as mpd
 
 from spotlight.common.protoSelector import ProtoABSSelector
 from spotlight.common.ErrRetry import ErrRetryF
@@ -33,16 +34,26 @@ class Saver(ProtoABSSelector):
         encod = input("인코딩? (cp949)>>") or 'utf8'
         sep = input("Seperator? (기본값 \\t)") or '\t'
 
-        pbar = tqdm.tqdm(total=self.df.shape[0], desc='Save')                
+        #MODIN 구현
+        flagModin = input("USE MODIN? (DEFAUT : N)>>") or 'N'     
+        if flagModin =='Y': mdf = mpd.DataFrame(self.df)
 
+        pbar = tqdm.tqdm(total=self.df.shape[0], desc='Save')
+        
         lineStart = 0
         chunksize = 10000000 #천만으로 변경
         flagFirst = True #처음에만 헤더를 넣기 위한 Flag
         while True: #헤더가 추가되는 오류 디버그 231206
             lineEnd = min(lineStart + chunksize, self.df.shape[0])
             length = lineEnd - lineStart
-            if flagFirst: self.df.iloc[lineStart:lineEnd, :].to_csv(index=False, sep=sep, encoding=encod, path_or_buf=path, mode='a')            
-            else: self.df.iloc[lineStart:lineEnd, :].to_csv(index=False, sep=sep, encoding=encod, path_or_buf=path, mode='a', header=None)
+
+            if flagModin =='Y': #IF USE MODIN
+                if flagFirst: mdf.iloc[lineStart:lineEnd, :].to_csv(index=False, sep=sep, encoding=encod, path_or_buf=path, mode='a')
+                else: mdf.iloc[lineStart:lineEnd, :].to_csv(index=False, sep=sep, encoding=encod, path_or_buf=path, mode='a', header=None)
+            else:
+                if flagFirst: self.df.iloc[lineStart:lineEnd, :].to_csv(index=False, sep=sep, encoding=encod, path_or_buf=path, mode='a')
+                else: self.df.iloc[lineStart:lineEnd, :].to_csv(index=False, sep=sep, encoding=encod, path_or_buf=path, mode='a', header=None)
+
             pbar.update(length)
             lineStart += length
 
@@ -63,5 +74,10 @@ class Saver(ProtoABSSelector):
 
     def _saveExcel(self):
         path = input("저장할 Excel filename을 지정하세요(기본값 result.xlsx)>>") or 'result.xlsx'      
-        self.df.to_excel(path, index=None)
+
+        flagModin = input("USE MODIN? (DEFAUT : N)>>") or 'N'     
+        if flagModin == 'Y':
+            mdf = mpd.DataFrame(self.df)
+            mdf._to_pandas().to_excel(path, index=None)
+        else: self.df.to_excel(path, index=None)
         print("save done")

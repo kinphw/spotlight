@@ -1,6 +1,4 @@
 #RECON 파일 추출
-import pandas as pd
-
 from spotlight.common.ErrRetry import ErrRetryF
 from spotlight.modify.modify import Modifier
 
