@@ -91,8 +91,7 @@ class Modifier(ProtoABSSelector):
                 case '23': self._changeColumn()
                 case '24': self._changeColumnDtype()
 
-                case '90':
-                    print("DEBUG NOW") #여기다 BREAKPOINT를 걸면 수기 디버깅가능
+                case '90': breakpoint() #240119
                 case '98': self.df.info()
                 case '99': print(self.df.head(10))
 

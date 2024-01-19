@@ -56,7 +56,7 @@ class Spotlight(ProtoABSSelector):
 
         while True:
 
-            print(Colors.RED + "Spotlight : v0.0.2" + Colors.END)
+            print(Colors.RED + "Spotlight : v0.0.3" + Colors.END)
 
             print(textMain)
             flag = input(">>")
@@ -85,8 +85,7 @@ class Spotlight(ProtoABSSelector):
 
                 case '41': Saver(self.df).run()
                 case '42': SaverPart(self.df).run()                
-                case '90':
-                    print("DEBUG NOW") #여기다 BREAKPOINT를 걸면 수기 디버깅가능
+                case '90': breakpoint() #240119
                 case '91': self.df.info()
                 case '92': print(self.df.head(10))
                 case '93': self.df.head(10).to_excel("view.xlsx") ; print("view.xlsx 추출완료")
