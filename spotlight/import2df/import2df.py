@@ -34,7 +34,7 @@ class Import2Df:
         if flagModin =='Y': #MODIN을 쓸 때
             #df = mpd.DataFrame()
             #chunksize = 10000000 #천만
-            df = mpd.read_csv(path, sep=sep, encoding=encod, low_memory=False)#, chunksize=chunksize)
+            df = mpd.read_csv(path, sep=sep, encoding=encod) #, low_memory=False)#, chunksize=chunksize) #240119 
             # for count, chunk in enumerate(dfReader):
             #     df = mpd.concat([df, chunk])
             #     pbar.update(chunk.shape[0])
