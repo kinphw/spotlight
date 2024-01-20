@@ -56,7 +56,7 @@ class Spotlight(ProtoABSSelector):
 
         while True:
 
-            print(Colors.RED + "Spotlight : v0.0.3" + Colors.END)
+            print(Colors.RED + "Spotlight : v0.0.4" + Colors.END)
 
             print(textMain)
             flag = input(">>")
@@ -78,7 +78,7 @@ class Spotlight(ProtoABSSelector):
 
                 case '31': self.df = runImport2Df()
                 case '32': self.df = AutoMap().autoMap(self.df)
-                case '33': Modifier(self.df).run()
+                case '33': self.df = Modifier(self.df).run() #240120
                 case '34': ReconGL(self.df).run()
                 case '35': PivotMonthAcct(self.df).run()
                 case '36': CalSum(self.df).run() #240117 추가

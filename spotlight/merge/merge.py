@@ -77,8 +77,7 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
 
                 case '50': self._selectDF()
 
-                case '90':
-                    print("DEBUG NOW") #여기다 BREAKPOINT를 걸면 수기 디버깅가능
+                case '90': breakpoint() #240120
                 case '91': self.dfA.info()
                 case '92': print(self.dfA.head(10))
 
@@ -137,14 +136,16 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
 
     def enterModify(self):
         print("entering modify mode to modify df(selected)...")
-        flag:str = input("A or B or Join>>")
-        dfTmp:pd.DataFrame
-        match(flag):
-            case 'A': dfTmp = self.dfA
-            case 'B': dfTmp = self.dfB
-            case 'Join': dfTmp = self.dfJoin
-            case _: print("잘못된 입력입니다."); return
-        Modifier(dfTmp).run()        
+        if isinstance(self.df,pd.DataFrame): Modifier(self.df).run()
+        else:
+            flag:str = input("A or B or Join>>")
+            dfTmp:pd.DataFrame
+            match(flag):
+                case 'A': dfTmp = self.dfA
+                case 'B': dfTmp = self.dfB
+                case 'Join': dfTmp = self.dfJoin
+                case _: print("잘못된 입력입니다."); return
+            Modifier(dfTmp).run()        
 
     def _selectDF(self, flag:str = ''):
         print("Select DF...")

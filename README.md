@@ -2,7 +2,7 @@
 
 ## Ver
 
-v0.0.3
+v0.0.4
 
 ## 목적
 
@@ -72,7 +72,6 @@ FA&A 박형원
 ## History
 
 v0.0.1 DD 231218  
-v0.0.2 DD 240117  
-추가 : 탭/개행 삭제기능, sum기능, head to excel 추출, 계정별/월별 금액 추출, Modin사용 import/export
-v0.0.3 DD 240119  
-breakpoint 추가
+v0.0.2 DD 240117 : 추가 : 탭/개행 삭제기능, sum기능, head to excel 추출, 계정별/월별 금액 추출, Modin사용 import/export
+v0.0.3 DD 240119 : breakpoint 추가
+v0.0.4 DD 240120 : minor patch

@@ -21,7 +21,7 @@ class Modifier(ProtoABSSelector):
     # def __init__(self, df:pd.DataFrame = None): #의존성 주입
     #     self.df = df
 
-    def run(self) -> None:
+    def run(self) -> pd.DataFrame:
         text =  "#"*10+"\n"
         text += Colors.RED + "MODIFY MODE\n" + Colors.END
         text += Colors.RED + "전처리_전표금액\n" + Colors.END
@@ -38,6 +38,7 @@ class Modifier(ProtoABSSelector):
         text += "22. drop duplicate\n"
         text += "23. Change column name\n"
         text += "24. Change column datatype\n"
+        text += "25. Change column datatype : All Object to String\n"
         text += "\n"
         text += Colors.RED + "General\n" + Colors.END
         text += "90. DEBUG MODE\n"
@@ -51,7 +52,7 @@ class Modifier(ProtoABSSelector):
             flag = input(">>")            
             match flag:
                 case '?': print(text)
-                case 'q': print("MODIFY MODE END"); break
+                case 'q': print("MODIFY MODE END"); return self.df #240120. 직접 수정하는 경우 call by obj.ref가 풀리기 때문에 반환해줘야 함
                 case '11': #콤마 없애기 : 변경컬럼선택 / 시행
                     cName = self.selectColumn() #컬럼명 추출
                     Replacer(self.df).run(cName) #DF랑 컬럼명을 던진다
@@ -90,6 +91,7 @@ class Modifier(ProtoABSSelector):
                 case '22': DropDuplicate(self.df).run()
                 case '23': self._changeColumn()
                 case '24': self._changeColumnDtype()
+                case '25': self._changeColumnDtypeAllObj2Str()
 
                 case '90': breakpoint() #240119
                 case '98': self.df.info()
@@ -119,4 +121,12 @@ class Modifier(ProtoABSSelector):
         cName = self.selectColumn("변경하고자 하는 컬럼을 선택하세요")        
         cDtype = input("변경하고자 하는 자료형을 입력(i.e. string, float64, int64 등)>>")        
         self.df[cName] = self.df[cName].astype(cDtype)
+        print("DONE")
+    
+    #240120
+    @ErrRetryF
+    def _changeColumnDtypeAllObj2Str(self) -> None:
+        print("모든 Object column을 String으로 일괄변환")
+        for i in self.df.columns.to_list():
+            if self.df.dtypes[i] == 'O': print(i,"변환합니다."); self.df[i] = self.df[i].astype('string')
         print("DONE")
