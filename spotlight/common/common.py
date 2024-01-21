@@ -25,4 +25,4 @@ def mapcount(filename, encoding) -> int:
         readline = buf.readline
         while readline():
             lines += 1        
-        return lines
+        return lines #PS. Column수를 포함한 전체 행수를 반환한다. 따라서 데이터 행수는 Column을 제외한 -1이어야 한다.

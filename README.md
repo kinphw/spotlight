@@ -2,7 +2,7 @@
 
 ## Ver
 
-v0.0.4
+v0.0.5
 
 ## 목적
 
@@ -75,3 +75,4 @@ v0.0.1 DD 231218
 v0.0.2 DD 240117 : 추가 : 탭/개행 삭제기능, sum기능, head to excel 추출, 계정별/월별 금액 추출, Modin사용 import/export
 v0.0.3 DD 240119 : breakpoint 추가
 v0.0.4 DD 240120 : minor patch
+v0.0.5 DD 240121 : save split (text or excel) 기능추가 / DF에서 추출하거나 아니면 직접 텍스트에서 추출함
