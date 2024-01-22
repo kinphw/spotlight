@@ -11,11 +11,10 @@ __pycache__/
 !.vscode/extensions.json
 *.code-workspace
 
-#pypi
+#pypi, pyinstaller
 dist/*
 build/*
-run.spec]\
-ㅡ jkghsduj.;/
+run.spec
 
 #Add
 test.py

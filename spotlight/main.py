@@ -9,6 +9,8 @@ from spotlight.concatText.concatTextTest import ConcatTextTest
 from spotlight.import2df.import2df import runImport2Df
 from spotlight.save.save import Saver
 from spotlight.save.savePart import SaverPart
+from spotlight.save.saveSplit import SaverSplit
+from spotlight.save.saveSplitFrText import SaverSplitFrText
 from spotlight.automap.automap import AutoMap
 from spotlight.modify.modify import Modifier
 from spotlight.recon.recon import ReconGL
@@ -21,6 +23,9 @@ from spotlight.common.protoSelector import ProtoABSSelector
 class Spotlight(ProtoABSSelector):
     df:pd.DataFrame    
     def run(self):
+
+        print(Colors.RED + "Spotlight : v0.0.5" + Colors.END)
+
         text =  "#"*10+"\n"
         text += Colors.RED + "\nPreprocessing\n" + Colors.END
         text += "11. Excel to Text\n"    
@@ -43,7 +48,9 @@ class Spotlight(ProtoABSSelector):
 
         text += Colors.RED + "\nSave\n" + Colors.END
         text += "41. Save text(임시파일 Load는 31 활용)\n"
-        text += "42. Save a part of df(특정 계정과목 추출 등)\n"        
+        text += "42. Save a part of df(특정 계정과목 추출 등)\n"      
+        text += "43. Save df spiltted(일정 길이로 분할하여 저장) FROM Dataframe\n"
+        text += "44. Save text spiltted(텍스트를 바로 읽어서 일정 길이로 분할하여 저장) FROM Text\n"
 
         text += Colors.RED + "\nGeneral\n" + Colors.END
         text += "90. MANUAL HANDLING - DEBUG\n"
@@ -55,8 +62,6 @@ class Spotlight(ProtoABSSelector):
         textMain = Colors.RED + "MAIN MODE : enter '?' to help / 'q' to exit" + Colors.END
 
         while True:
-
-            print(Colors.RED + "Spotlight : v0.0.4" + Colors.END)
 
             print(textMain)
             flag = input(">>")
@@ -84,7 +89,10 @@ class Spotlight(ProtoABSSelector):
                 case '36': CalSum(self.df).run() #240117 추가
 
                 case '41': Saver(self.df).run()
-                case '42': SaverPart(self.df).run()                
+                case '42': SaverPart(self.df).run()   
+                case '43': SaverSplit(self.df).run() #240121 추가
+                case '44': SaverSplitFrText().run() #240121 추가
+
                 case '90': breakpoint() #240119
                 case '91': self.df.info()
                 case '92': print(self.df.head(10))
