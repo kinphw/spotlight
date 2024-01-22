@@ -13,6 +13,9 @@ __pycache__/
 
 #pypi
 dist/*
+build/*
+run.spec]\
+ㅡ jkghsduj.;/
 
 #Add
 test.py
@@ -25,3 +28,4 @@ ColumnLength.xlsx
 
 #oldver
 old/*
+
