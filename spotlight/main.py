@@ -19,6 +19,7 @@ from spotlight.recon.pivot import PivotMonthAcct
 from spotlight.merge.merge import Merger
 from spotlight.common.colors import Colors
 from spotlight.common.protoSelector import ProtoABSSelector
+from spotlight.common.ErrRetry import ErrRetryF
 
 class Spotlight(ProtoABSSelector):
     df:pd.DataFrame    
@@ -96,12 +97,18 @@ class Spotlight(ProtoABSSelector):
                 case '90': breakpoint() #240119
                 case '91': self.df.info()
                 case '92': print(self.df.head(10))
-                case '93': self.df.head(10).to_excel("view.xlsx") ; print("view.xlsx 추출완료")
+                case '93': self._head2excel()
                 case _: print("Retry"); continue
+
+    @ErrRetryF
+    def _head2excel(self):
+        self.df.head(10).to_excel("view.xlsx") ; print("view.xlsx 추출완료")
 
 def run(): 
     spot = Spotlight()
     spot.run()
+
+
 
 if __name__=="__main__":
     run()
