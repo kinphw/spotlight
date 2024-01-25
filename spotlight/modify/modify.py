@@ -8,6 +8,7 @@ from spotlight.modify.applyDC import ApplyDC
 from spotlight.modify.minus import ToMinus
 from spotlight.modify.m100 import M100
 from spotlight.modify.createUnsigned import CreateUnsigned
+from spotlight.modify.createSigned import CreateSigned
 from spotlight.modify.fillna import FillNA
 from spotlight.modify.automanual import AutoManual
 from spotlight.modify.dropColumn import DropColumn
@@ -31,9 +32,10 @@ class Modifier(ProtoABSSelector):
         text += "13. To Minus () or - : 문자열 () 또는 후위-인 경우 마이너스로 변환\n" #마이너스전환 : ()인 경우
         text += "14. Multiple 100  : 곱하기 100\n" #*100 : 변경컬럼선택 / 시행
         text += "15. FROM 전표금액 TO 차대금액  : signed 전표금액에서 unsigned 차변/대변을 생성한다.\n" #전표금액을 차대금액으로 뿌리기 : 전표기능/ 전표표시 선택 / (+)(-)로 자동 뿌림
-        text += "16. FILLNA(0)  : N/A를 0으로 채운다.\n" 
-        text += "17. 자동수동 : 특정 컬럼값(전표성격, 사용자 등)이 특정 문자열(복수 가능)을 포함하는 행을 A로 지정\n"
-        text += "18. 전표번호에서 소수점 제거(특히, 문자/숫자 mixed dtype에 대하여) => 벡터연산이 아니므로 느릴 수 있음\n"
+        text += "16. FROM 차대금액 TO 전표금액  : unsigned 차변/대변에서 signed 전표금액을 생성한다.\n"
+        text += "17. FILLNA(0)  : N/A를 0으로 채운다.\n" 
+        text += "18. 자동수동 : 특정 컬럼값(전표성격, 사용자 등)이 특정 문자열(복수 가능)을 포함하는 행을 A로 지정\n"
+        text += "19. 전표번호에서 소수점 제거(특히, 문자/숫자 mixed dtype에 대하여) => 벡터연산이 아니므로 느릴 수 있음\n"
         text += "\n"
         text += Colors.RED + "기타 전처리\n" + Colors.END
         text += "21. drop a column\n"
@@ -41,6 +43,7 @@ class Modifier(ProtoABSSelector):
         text += "23. Change column name\n"
         text += "24. Change column datatype\n"
         text += "25. Change column datatype : All Object to String\n"
+        text += "26. Add new column(to do something) : NA로 채워짐\n"
         text += "\n"
         text += Colors.RED + "General\n" + Colors.END
         text += "90. DEBUG MODE\n"
@@ -72,22 +75,19 @@ class Modifier(ProtoABSSelector):
                     cName = self.selectColumn("변경할 컬럼을 선택하세요") #컬럼명 추출
                     M100(self.df).run(cName)
 
-                case '15':                    
-                    cNameSigned = self.selectColumn("select signed amount (From)") #컬럼명 추출
-                    cNameUnsignedD = self.selectColumn("select Unsigned Debit (To Create)") #컬럼명 추출
-                    cNameUnsignedC = self.selectColumn("select Unsigned Credit (To Create)") #컬럼명 추출
-                    CreateUnsigned(self.df).run(cNameSigned, cNameUnsignedD, cNameUnsignedC)
+                case '15': self._createUnsigned()          
+                case '16': self._createSigned()
 
-                case '16':
+                case '17':
                     cName = self.selectColumn("변경할 컬럼을 선택하세요") #컬럼명 추출
                     FillNA(self.df).run(cName)
 
-                case '17':
+                case '18':
                     cNameBase = self.selectColumn("자동수동 구분 기준값을 포함하는 컬럼을 선택하세요(성격 또는 사용자 등)") #컬럼명 추출
                     cNameAM = self.selectColumn("자동수동 컬럼을 선택하세요") #컬럼명 추출
                     AutoManual(self.df).run(cNameBase, cNameAM)
 
-                case '18':
+                case '19':
                     RemoveDecimal(self.df).run(self.selectColumn("소수점을 제거할 (즉 .0을 삭제할 컬럼을 선택하세요"))
 
                 case '21':
@@ -97,6 +97,7 @@ class Modifier(ProtoABSSelector):
                 case '23': self._changeColumn()
                 case '24': self._changeColumnDtype()
                 case '25': self._changeColumnDtypeAllObj2Str()
+                case '26': self._addEmptyColumn()
 
                 case '90': breakpoint() #240119
                 case '98': self.df.info()
@@ -135,3 +136,25 @@ class Modifier(ProtoABSSelector):
         for i in self.df.columns.to_list():
             if self.df.dtypes[i] == 'O': print(i,"변환합니다."); self.df[i] = self.df[i].astype('string')
         print("DONE")
+
+    @ErrRetryF
+    def _addEmptyColumn(self) -> None:         
+        cNameAfter = input("새로 만들 컬럼명을 입력>>")
+        self.df[cNameAfter] = pd.NA
+        print("DONE")        
+
+    @ErrRetryF
+    def _createUnsigned(self):
+        cNameSigned = self.selectColumn("select signed amount (From)") #컬럼명 추출
+        cNameUnsignedD = self.selectColumn("select Unsigned Debit (To Create)") #컬럼명 추출
+        cNameUnsignedC = self.selectColumn("select Unsigned Credit (To Create)") #컬럼명 추출
+        CreateUnsigned(self.df).run(cNameSigned, cNameUnsignedD, cNameUnsignedC)
+
+    @ErrRetryF
+    def _createSigned(self):        
+        cNameUnsignedD = self.selectColumn("select Unsigned Debit (To Create)") #컬럼명 추출
+        cNameUnsignedC = self.selectColumn("select Unsigned Credit (To Create)") #컬럼명 추출
+        flag = input("Signed Amount 컬럼을 새로 생성합니까? Y / N")
+        if flag == 'Y': self._addEmptyColumn()
+        cNameSigned = self.selectColumn("select signed amount (From)") #컬럼명 추출       
+        CreateSigned(self.df).run(cNameSigned, cNameUnsignedD, cNameUnsignedC)        

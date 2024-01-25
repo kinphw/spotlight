@@ -1,5 +1,3 @@
-# v0.0.1 DD240117
-
 import pandas as pd
 
 from spotlight.read import runReadColumnLength
@@ -25,7 +23,7 @@ class Spotlight(ProtoABSSelector):
     df:pd.DataFrame    
     def run(self):
 
-        print(Colors.RED + "Spotlight : v0.0.5" + Colors.END)
+        print(Colors.RED + "Spotlight : v0.0.6" + Colors.END)
 
         text =  "#"*10+"\n"
         text += Colors.RED + "\nPreprocessing\n" + Colors.END

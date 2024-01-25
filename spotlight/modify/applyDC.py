@@ -17,7 +17,9 @@ class ApplyDC:
         self.df[cName1] = self.df[cName1].astype('float64')
 
         #Run
-        IndicatorDebit = input("Indicator의 차변구분자를 입력하세요(기본값 'D')>>") or 'D'        
+        IndicatorDebit = input("Indicator의 차변구분자를 입력하세요(기본값 'D')>>") or 'D'
+        flagInt = input("혹시 문자가 아닌 숫자인 경우 'Y' 입력. 이외에는 엔터>>")
+        if flagInt == 'Y': IndicatorDebit = int(IndicatorDebit)
         self.df[cName1] = np.where(self.df[cName2] == IndicatorDebit
                  , self.df[cName1]*1
                  , self.df[cName1]*(-1))
