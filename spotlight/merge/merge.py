@@ -36,7 +36,7 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
         text += "42. Connect DFJoin to Main Mode (이어서 바로 작업할 수 있게)\n\n"
         text += "50. Select DF(1,2,Join 중에) => MODIFY, Export, Connect와 연계됨\n\n"
         text += Colors.RED + "General\n" + Colors.END
-        text += "90. MANUAL HANDLING - DEBUG\n"
+        text += "90. MANUAL HANDLING - DEBUG (Use self.dfA, self.dfB, self.dfJoin)\n"
         text += "91. df1.info()\n"        
         text += "92. df1.head(10)\n"        
         text += "93. df2.info()\n"        
