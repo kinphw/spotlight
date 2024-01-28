@@ -13,7 +13,7 @@ class ReconGL(Modifier): #Inherit Modifier to use 'selectColumn'
         cNameAcct = self.selectColumn("Select Account Number (to group by)")
         cNameAmt = self.selectColumn("Select Amount LC (to sum)")
         self.test(cNameAcct, cNameAmt)
-        self.export(self)
+        self.export()
         print("DONE")
 
     #상속 후 오버라이드해서 사용할 메서드
