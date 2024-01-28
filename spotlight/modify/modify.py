@@ -46,7 +46,7 @@ class Modifier(ProtoABSSelector):
         text += "26. Add new column(to do something) : NA로 채워짐\n"
         text += "\n"
         text += Colors.RED + "General\n" + Colors.END
-        text += "90. DEBUG MODE\n"
+        text += "90. DEBUG MODE (USE Self.df)\n"
         text += "98. df.info()\n"
         text += "99. df.head(10)\n"
         #####

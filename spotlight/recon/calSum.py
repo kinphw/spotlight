@@ -9,15 +9,14 @@ class CalSum(ReconGL): #기능이 비슷한 recon을 상속  #Inherit Modifier t
         #cNameAcct = self.selectColumn("Select Account Number (to group by)")
         cNameAmt = self.selectColumn("Select Column to sum")
         self.export(cNameAmt)
-    
-    def export(self, cNameAmt:str): 
 
+    def test(self, cNameAmt:str): 
         #먼저 float64로 바꾼다
         self.df[cNameAmt] = self.df[cNameAmt].astype('float64')
+        print("합계 :", self.df[cNameAmt].sum())
+        
 
-        #Run
-        #fileName = input("검증결과 추출할 파일명을 입력하세요(기본값 GL_RECON.xlsx)>>") or 'GL_RECON.xlsx'        
-        print("합계 :", self.df[cNameAmt].sum())        
-        #print("DONE")
+
+
         
 
