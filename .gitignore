@@ -29,5 +29,7 @@ ColumnLength.xlsx
 old/*
 
 *.xlsx
+*.tsv
 !Tool/Integrity Check.xlsx
 !Tool/TableDef.xlsx
+a.tsv
