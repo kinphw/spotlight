@@ -63,6 +63,6 @@ class UniqueValidator(ReconGL): #Inherit Modifier to use 'selectColumn'
             print(self.serFalse.head(10))    
 
             if (input("검증결과 오류내역만 추출하겠습니까?(Y) (기본값 N. 전체를 추출)>>") or 'N') == 'Y':
-                self.dfResult = self.serFalse.reset_index() #multi index => column
+                self.dfResult = self.serFalse #.reset_index() #multi index => column
             
             self.export()
