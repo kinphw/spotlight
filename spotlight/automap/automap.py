@@ -4,7 +4,6 @@ import spotlight.common.myFileDialog as myfd
 
 from spotlight.common.ErrRetry import ErrRetryF
 
-
 class AutoMap:
 
     @ErrRetryF
@@ -30,7 +29,6 @@ class AutoMap:
 
         for i in range(0, dfMapKeyin.shape[0]):        
             dfTB[dfMapKeyin.iloc[i]["tobe"]] = dfMapKeyin.iloc[i]["asis"]
-
 
         print("AUTO-MAP Done")
         return dfTB            

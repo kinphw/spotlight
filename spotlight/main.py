@@ -44,6 +44,7 @@ class Spotlight(ProtoABSSelector):
         text += "32. Auto_MAP\n"
         text += "33. Modify mode\n"
         text += "34. To recon G/L and T/B, export SUM(AMT LC)groupby Acct\n"
+        text += "34-2. To recon G/L and T/B, export SUM(AMT LC)groupby Acct (with directly DASK, no read dataframe) (추후 구현)\n"
         text += "35. export pivot table(ex. 월별/계정별, 계정별/차대별 등등..)\n" #240127 : 기능은 동일하나 설명을 변경
         text += "36. Calculate Sum a specific column (합계검증목적)\n" #240117
         text += "37. Uniqueness validation (유일성검증)\n" #240127
