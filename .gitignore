@@ -31,3 +31,5 @@ old/*
 *.xlsx
 !Tool/Integrity Check.xlsx
 !Tool/TableDef.xlsx
+
+*.txt

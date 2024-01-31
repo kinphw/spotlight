@@ -1,3 +1,5 @@
+import csv
+
 import pandas as pd
 import modin.pandas as mpd #240117
 import tqdm
@@ -44,11 +46,12 @@ class Import2Df:
             pbar = tqdm.tqdm(total=cnt, desc='Read')        
             df = pd.DataFrame()        
             chunksize = 10000000 #천만
-            dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize)
+            dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, quoting=csv.QUOTE_NONE)  #240131
             for count, chunk in enumerate(dfReader):
                 df = pd.concat([df, chunk])
                 pbar.update(chunk.shape[0])        
             pbar.close()
+            if cnt != df.shape[0]: print("raw text rows와 dataframe records count가 상이합니다. 주의하세요.(QUOTE때문일 수 있음)") #240131
         
         return df
 
