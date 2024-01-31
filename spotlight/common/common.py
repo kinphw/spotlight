@@ -26,3 +26,14 @@ def mapcount(filename, encoding) -> int:
         while readline():
             lines += 1        
         return lines #PS. Column수를 포함한 전체 행수를 반환한다. 따라서 데이터 행수는 Column을 제외한 -1이어야 한다.
+    
+def buf_count_newlines_gen(fname):
+    def _make_gen(reader):
+        while True:
+            b = reader(2 ** 16)
+            if not b: break
+            yield b
+
+    with open(fname, "rb") as f:
+        count = sum(buf.count(b"\n") for buf in _make_gen(f.raw.read))
+    return count    
