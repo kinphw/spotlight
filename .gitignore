@@ -32,6 +32,4 @@ old/*
 *.tsv
 !Tool/Integrity Check.xlsx
 !Tool/TableDef.xlsx
-
 *.txt
-a.tsv

@@ -4,7 +4,6 @@ import spotlight.common.myFileDialog as myfd
 
 from spotlight.common.ErrRetry import ErrRetryF
 
-
 class AutoMap:
 
     #@ErrRetryF
