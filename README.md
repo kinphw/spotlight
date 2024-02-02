@@ -2,7 +2,7 @@
 
 ## Ver
 
-v0.0.71
+v0.0.72
 
 ## 목적
 
@@ -79,3 +79,4 @@ v0.0.5 DD 240121 : save split (text or excel) 기능추가 / DF에서 추출하�
 v0.0.6 240125 : FROM 전표금액 TO 차대금액 추가 / 차대처리시 숫자 자료형 처리가능하게 변경  
 v0.0.7 : 유일성검증기능 추가
 v0.0.71 : read_csv debug (quote)
+v0.0.72 : AUTO_MAP 취소시 loaded df 사라지는 버그 해결 / 정규식 수정 오타수정 / 비정규식 replace 기능 추가
