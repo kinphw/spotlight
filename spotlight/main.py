@@ -14,6 +14,7 @@ from spotlight.modify.modify import Modifier
 from spotlight.recon.recon import ReconGL
 from spotlight.recon.calSum import CalSum
 from spotlight.recon.pivot import PivotMonthAcct
+from spotlight.recon.groupby import GroupbyUserDefine
 from spotlight.recon.uniq import UniqueValidator
 
 from spotlight.merge.merge import Merger
@@ -25,7 +26,7 @@ class Spotlight(ProtoABSSelector):
     df:pd.DataFrame    
     def run(self):
 
-        print(Colors.RED + "Spotlight : v0.0.72" + Colors.END)
+        print(Colors.RED + "Spotlight : v0.0.731" + Colors.END)
 
         text =  "#"*10+"\n"
         text += Colors.RED + "\nPreprocessing\n" + Colors.END
@@ -44,10 +45,10 @@ class Spotlight(ProtoABSSelector):
         text += "32. Auto_MAP\n"
         text += "33. Modify mode\n"
         text += "34. To recon G/L and T/B, export SUM(AMT LC)groupby Acct\n"
-        text += "34-2. To recon G/L and T/B, export SUM(AMT LC)groupby Acct (with directly DASK, no read dataframe) (추후 구현)\n"
         text += "35. export pivot table(ex. 월별/계정별, 계정별/차대별 등등..)\n" #240127 : 기능은 동일하나 설명을 변경
-        text += "36. Calculate Sum a specific column (합계검증목적)\n" #240117
-        text += "37. Uniqueness validation (유일성검증)\n" #240127
+        text += "36. User-defined groupby (sum or count) \n"        
+        text += "37. Calculate Sum a specific column (합계검증목적)\n" #240117
+        text += "38. Uniqueness validation (유일성검증)\n" #240127
 
         text += Colors.RED + "\nSave\n" + Colors.END
         text += "41. Save text(임시파일 Load는 31 활용)\n"
@@ -89,8 +90,9 @@ class Spotlight(ProtoABSSelector):
                 case '33': self.df = Modifier(self.df).run() #240120
                 case '34': ReconGL(self.df).run()
                 case '35': PivotMonthAcct(self.df).run()
-                case '36': CalSum(self.df).run() #240117 추가
-                case '37': UniqueValidator(self.df).run() #240127 추가
+                case '36': GroupbyUserDefine(self.df).run()
+                case '37': CalSum(self.df).run() #240117 추가
+                case '38': UniqueValidator(self.df).run() #240127 추가
 
                 case '41': Saver(self.df).run()
                 case '42': SaverPart(self.df).run()   

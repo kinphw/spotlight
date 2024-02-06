@@ -28,7 +28,7 @@ class ReconGL(Modifier): #Inherit Modifier to use 'selectColumn'
         self.dfResult = self.dfResult.reset_index()
 
         while True:
-            flag = input("Excel(1) or Text(2)>>")
+            flag = input("Excel(1) or Text(2) or Exit(3)>>")
             match(flag):
                 case '1':
                     fileName = input("검증결과 추출할 파일명을 입력하세요(기본값 RECON.xlsx)>>") or 'RECON.xlsx'
@@ -36,6 +36,9 @@ class ReconGL(Modifier): #Inherit Modifier to use 'selectColumn'
                 case '2':
                     fileName = input("검증결과 추출할 파일명을 입력하세요(기본값 RECON.tsv)>>") or 'RECON.tsv'
                     self.dfResult.to_csv(fileName, index=False, encoding='utf8', sep='\t'); break
+                case '3':
+                    print("그냥 종료합니다.")
+                    break                
                 case _:
                     print("잘못 입력하셨습니다.")
 
