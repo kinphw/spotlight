@@ -3,12 +3,16 @@ import csv
 import pandas as pd
 import modin.pandas as mpd #240117
 import tqdm
+import ray
 
 import spotlight.common.myFileDialog as myfd
 from spotlight.common.ErrRetry import ErrRetry
 from spotlight.common.common import mapcount
 
-class Import2Df:    
+class Import2Df:
+
+    bInit:bool = False
+
     def run(self, msg:str = "") -> pd.DataFrame:
         
         help = "1. import txt\n"
@@ -36,7 +40,8 @@ class Import2Df:
         if flagModin =='Y': #MODIN을 쓸 때
             #df = mpd.DataFrame()
             #chunksize = 10000000 #천만
-            df = mpd.read_csv(path, sep=sep, encoding=encod) #, low_memory=False)#, chunksize=chunksize) #240119 
+            if not Import2Df.bInit: ray.init(); Import2Df.bInit = True
+            df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE) #, low_memory=False)#, chunksize=chunksize) #240119 
             # for count, chunk in enumerate(dfReader):
             #     df = mpd.concat([df, chunk])
             #     pbar.update(chunk.shape[0])

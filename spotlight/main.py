@@ -72,8 +72,9 @@ class Spotlight(ProtoABSSelector):
 
             match flag:
                 case '?': print(text)
-                case 'q': print("END"); break
-                
+                case 'q':
+                    if input("정말 종료합니까? (종료시 Y)>>") == 'Y': print("END"); break
+                    else: continue                
                 case '11': print("USE VBA...(추후 연동예정)")
                 case '12': runConcatText()
                 case '13': ConcatTextTest().run()

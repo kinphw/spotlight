@@ -7,7 +7,6 @@ import modin.pandas as mpd
 from spotlight.common.protoSelector import ProtoABSSelector
 from spotlight.common.ErrRetry import ErrRetryF
 
-@ErrRetryF
 class Saver(ProtoABSSelector):
 
     # df:pd.DataFrame
@@ -15,6 +14,7 @@ class Saver(ProtoABSSelector):
     # def __init__(self, df:pd.DataFrame):
     #     self.df = df
 
+    @ErrRetryF
     def run(self):
         msg = "1. Save to Text\n"
         msg += "2. Save to parquet\n"
