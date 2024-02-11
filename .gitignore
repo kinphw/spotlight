@@ -33,3 +33,4 @@ old/*
 !Tool/Integrity Check.xlsx
 !Tool/TableDef.xlsx
 *.txt
+*.csv

@@ -63,7 +63,7 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
                 case '21': self.enterModify()
                 
                 case '31': 
-                    self._merge()
+                    if not self._merge(): break #취소되면 아래 선택문 실행하지 않고 종료시킴
                     self._selectDF('Join')
                 case '32': 
                     self._concat()
@@ -89,13 +89,13 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
 
                 case _: print("Retry"); continue
 
-    def _merge(self) -> None:        
+    def _merge(self) -> bool:        
         #cNameJoinA:str = self.selectColumn("Select Join Column (df1)", self.dfA)
         #cNameJoinB:str = self.selectColumn("Select Join Column (df2)", self.dfB)
         cNameJoinA:list = SetKey(self.dfA).run("set Key : dfA")
         cNameJoinB:list = SetKey(self.dfB).run("set Key : dfA")        
         
-        if not self.check(cNameJoinA, cNameJoinB): print("중단합니다."); return #VALIDATE
+        if not self._check(cNameJoinA, cNameJoinB): print("중단합니다."); return False #VALIDATE
 
         howMerge = input("Select join method(기본값 : inner)>>") or 'inner'
 
@@ -108,8 +108,9 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
         #print("검증 : ", self.dfJoin.shape[0] == self.dfA.shape[0] + self.dfB.shape[0])
 
         print("DONE")
+        return True #성공시 True 반환
         
-    def check(self, cNameJoinA:list, cNameJoinB:list) -> bool:
+    def _check(self, cNameJoinA:list, cNameJoinB:list) -> bool:
         print("신뢰성 있는 JOIN을 위해서는 LEFT-KEY와 RIGHT-KEY가 PRIMARY KEY여야 합니다. (이외의 경우 중복값 발생)")
         print("(i.e. Left outer join 시에는 Right Table의 KEY가 PK여야만 함 (LEFT는 상관없음))")
         print(Colors.CYAN+"테스트를 실시합니다."+Colors.END)

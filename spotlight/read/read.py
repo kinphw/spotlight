@@ -7,7 +7,7 @@ class ReadColumnLength:
         path = myfd.askopenfilename("Select a sample GL file")
         encoding = input("encoding, 기본값 cp949>>") or 'cp949'
         sep = input("sep, 기본값 tsv>>") or '\t'
-        df = pd.read_csv(path, encoding=encoding, sep=sep, low_memory=False)
+        df = pd.read_csv(path, encoding=encoding, sep=sep, low_memory=False, dtype='string') #DEBUG.: 240211
         
         dfTmp = pd.DataFrame()
         for column in df:
