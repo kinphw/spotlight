@@ -32,7 +32,13 @@ class Import2Df:
     def _importTxt(self, msg:str = "Text 파일을 선택하세요.") -> pd.DataFrame:       
         path = myfd.askopenfilename(msg)
         sep = input("Seperator? (기본값 \\t)>>") or '\t'
-        encod = input("인코딩? (cp949)>>") or 'cp949'        
+        encod = input("인코딩? (cp949)>>") or 'cp949'
+        
+        #240215
+        flag = input("quote(\")를 사용합니까? (Y/N, 기본값 N)")
+        if flag == 'Y': bQuote = True
+        elif flag == 'Y': bQuote = False
+        else: print("선택하지 않았습니다. quote를 사용하지 않습니다."); bQuote = False
 
         ## MODIN 활용부
         flagModin = input("USE MODIN? MODIN doesn't support chunksize (DEFAUT : N)>>") or 'N'
@@ -41,7 +47,9 @@ class Import2Df:
             #df = mpd.DataFrame()
             #chunksize = 10000000 #천만
             if not Import2Df.bInit: ray.init(); Import2Df.bInit = True
-            df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE) #, low_memory=False)#, chunksize=chunksize) #240119 
+            
+            if bQuote: df = mpd.read_csv(path, sep=sep, encoding=encod, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119 
+            else: df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119 
             # for count, chunk in enumerate(dfReader):
             #     df = mpd.concat([df, chunk])
             #     pbar.update(chunk.shape[0])
@@ -51,7 +59,9 @@ class Import2Df:
             pbar = tqdm.tqdm(total=cnt, desc='Read')        
             df = pd.DataFrame()        
             chunksize = 10000000 #천만
-            dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, quoting=csv.QUOTE_NONE)  #240131
+            
+            if bQuote: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, dtype='string')  #240131 #240214
+            else: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, quoting=csv.QUOTE_NONE, dtype='string')  #240131 #240214
             for count, chunk in enumerate(dfReader):
                 df = pd.concat([df, chunk])
                 pbar.update(chunk.shape[0])        

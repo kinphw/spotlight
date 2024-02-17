@@ -2,7 +2,7 @@
 
 ## Ver
 
-v0.0.731
+v0.0.733
 
 ## 목적
 
@@ -81,3 +81,5 @@ v0.0.7 : 유일성검증기능 추가
 v0.0.71 : read_csv debug (quote)
 v0.0.72 : AUTO_MAP 취소시 loaded df 사라지는 버그 해결 / 정규식 수정 오타수정 / 비정규식 replace 기능 추가
 v0.0.73 : user-define groupby
+v0.0.732 : dtype을 기본적으로 string으로 읽는다. (데이터 손실 방지)
+v0.0.733 : data import시 quote 선택받도록 변경
