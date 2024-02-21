@@ -15,6 +15,7 @@ from spotlight.modify.dropColumn import DropColumn
 from spotlight.modify.dropDuplicate import DropDuplicate
 from spotlight.common.colors import Colors
 from spotlight.modify.removeD import RemoveDecimal
+from spotlight.modify.excelNum import ExcelNum
 
 class Modifier(ProtoABSSelector):
 
@@ -36,6 +37,7 @@ class Modifier(ProtoABSSelector):
         text += "17. FILLNA(0)  : N/A를 0으로 채운다.\n" 
         text += "18. 자동수동 : 특정 컬럼값(전표성격, 사용자 등)이 특정 문자열(복수 가능)을 포함하는 행을 A로 지정\n"
         text += "19. 전표번호에서 소수점 제거(특히, 문자/숫자 mixed dtype에 대하여) => 벡터연산이 아니므로 느릴 수 있음\n"
+        text += "110. (Excel을 TSV로 변환한 경우) 숫자형식 일괄 전처리 : 공백제거+콤마제거+\"-\"0으로+()음수화\n"
         text += "\n"
         text += Colors.RED + "기타 전처리\n" + Colors.END
         text += "21. drop a column\n"
@@ -89,6 +91,9 @@ class Modifier(ProtoABSSelector):
 
                 case '19':
                     RemoveDecimal(self.df).run(self.selectColumn("소수점을 제거할 (즉 .0을 삭제할 컬럼을 선택하세요"))
+
+                case '110':
+                    ExcelNum(self.df).run(self.selectColumn("엑셀변환 텍스트에서 숫자로 변경할 컬럼을 선택하세요"))
 
                 case '21':
                     cName = self.selectColumn("Drop할 Column을 선택하세요") #컬럼명 추출

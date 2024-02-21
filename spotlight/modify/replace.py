@@ -1,6 +1,7 @@
 import pandas as pd
 
 from spotlight.common.ErrRetry import ErrRetryF
+from spotlight.common.protoSelector import ProtoSelector
 
 #정규식 추가할 수 있도록 변경 (정규식 before, after 받음)
 '''
@@ -8,13 +9,13 @@ from spotlight.common.ErrRetry import ErrRetryF
 공백 없애기 : '[ ]',''
 마지막 - 없애기 : '[-]$',''
 '''
-class Replacer:
+class Replacer(ProtoSelector):
 
-    df:pd.DataFrame
+    # df:pd.DataFrame
     bReg:bool
 
-    def __init__(self, df:pd.DataFrame):
-        self.df = df
+    # def __init__(self, df:pd.DataFrame):
+    #     self.df = df
 
     @ErrRetryF
     def run(self, cName:str) -> None: #콤마 없애기

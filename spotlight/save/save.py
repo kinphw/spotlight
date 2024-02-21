@@ -6,6 +6,7 @@ import modin.pandas as mpd
 
 from spotlight.common.protoSelector import ProtoABSSelector
 from spotlight.common.ErrRetry import ErrRetryF
+import ray
 
 class Saver(ProtoABSSelector):
 
@@ -36,7 +37,9 @@ class Saver(ProtoABSSelector):
 
         #MODIN 구현
         flagModin = input("USE MODIN? (DEFAUT : N)>>") or 'N'     
-        if flagModin =='Y': mdf = mpd.DataFrame(self.df)
+        if flagModin =='Y':
+            if not ray.is_initialized(): ray.init()
+            mdf = mpd.DataFrame(self.df)
 
         pbar = tqdm.tqdm(total=self.df.shape[0], desc='Save')
         

@@ -14,7 +14,7 @@ class Txt2Df: #50만행씩 READ
         else:
             headerArg = None
 
-        for chunk in pd.read_csv(fileName, encoding = encoding, delimiter=delimiter, low_memory=False, header = headerArg, chunksize=chunksize):   #delimiter
+        for chunk in pd.read_csv(fileName, encoding = encoding, delimiter=delimiter, low_memory=False, header = headerArg, chunksize=chunksize, dtype='string'):   #delimiter #240217 debug            
             dfCon = pd.concat([dfCon,chunk])
             totalChunk = totalChunk + chunk.shape[0]
             

@@ -9,9 +9,7 @@ import spotlight.common.myFileDialog as myfd
 from spotlight.common.ErrRetry import ErrRetry
 from spotlight.common.common import mapcount
 
-class Import2Df:
-
-    bInit:bool = False
+class Import2Df:    
 
     def run(self, msg:str = "") -> pd.DataFrame:
         
@@ -35,10 +33,10 @@ class Import2Df:
         encod = input("인코딩? (cp949)>>") or 'cp949'
         
         #240215
-        flag = input("quote(\")를 사용합니까? (Y/N, 기본값 N)")
+        flag = input("quote(\")를 사용합니까? (Y/N, 기본값 Y)")
         if flag == 'Y': bQuote = True
         elif flag == 'Y': bQuote = False
-        else: print("선택하지 않았습니다. quote를 사용하지 않습니다."); bQuote = False
+        else: print("선택하지 않았습니다. quote를 사용합니다."); bQuote = True
 
         ## MODIN 활용부
         flagModin = input("USE MODIN? MODIN doesn't support chunksize (DEFAUT : N)>>") or 'N'
@@ -46,7 +44,7 @@ class Import2Df:
         if flagModin =='Y': #MODIN을 쓸 때
             #df = mpd.DataFrame()
             #chunksize = 10000000 #천만
-            if not Import2Df.bInit: ray.init(); Import2Df.bInit = True
+            if not ray.is_initialized(): ray.init()
             
             if bQuote: df = mpd.read_csv(path, sep=sep, encoding=encod, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119 
             else: df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119 

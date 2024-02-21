@@ -63,8 +63,7 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
                 case '21': self.enterModify()
                 
                 case '31': 
-                    if not self._merge(): break #취소되면 아래 선택문 실행하지 않고 종료시킴
-                    self._selectDF('Join')
+                    if self._merge(): self._selectDF('Join') #성공하면 Join을 선택함
                 case '32': 
                     self._concat()
                     self._selectDF('Join')                    

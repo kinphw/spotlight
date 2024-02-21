@@ -26,7 +26,7 @@ class Spotlight(ProtoABSSelector):
     df:pd.DataFrame    
     def run(self):
 
-        print(Colors.RED + "Spotlight : v0.0.732" + Colors.END)
+        print(Colors.RED + "Spotlight : v0.0.74" + Colors.END)
 
         text =  "#"*10+"\n"
         text += Colors.RED + "\nPreprocessing\n" + Colors.END
@@ -56,7 +56,7 @@ class Spotlight(ProtoABSSelector):
         text += "43. Save df spiltted(일정 길이로 분할하여 저장) FROM Dataframe\n"
         text += "44. Save text spiltted(텍스트를 바로 읽어서 일정 길이로 분할하여 저장) FROM Text\n"
 
-        text = Colors.RED + "\nGeneral\n" + Colors.END
+        text += Colors.RED + "\nGeneral\n" + Colors.END
         text += "90. MANUAL HANDLING - DEBUG (USE self.df)\n"
         text += "91. df.info()\n"        
         text += "92. df.head(10)\n"
