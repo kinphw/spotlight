@@ -4,7 +4,7 @@ from spotlight.read import runReadColumnLength
 from spotlight.txt2db import runTxt2Db
 from spotlight.concatText import runConcatText
 from spotlight.concatText.concatTextTest import ConcatTextTest
-from spotlight.import2df.import2df import runImport2Df
+from spotlight.import2df.import2df import Import2Df
 from spotlight.save.save import Saver
 from spotlight.save.savePart import SaverPart
 from spotlight.save.saveSplit import SaverSplit
@@ -26,7 +26,7 @@ class Spotlight(ProtoABSSelector):
     df:pd.DataFrame    
     def run(self):
 
-        print(Colors.RED + "Spotlight : v0.0.74" + Colors.END)
+        print(Colors.RED + "Spotlight : v0.0.741" + Colors.END)
 
         text =  "#"*10+"\n"
         text += Colors.RED + "\nPreprocessing\n" + Colors.END
@@ -86,7 +86,9 @@ class Spotlight(ProtoABSSelector):
                 case '22': print("USE mySQL")
                 case '23': runTxt2Db()
 
-                case '31': self.df = runImport2Df()
+                case '31':
+                    self.df = Import2Df().run()
+                    if self.df is None: print("선택하지 않았습니다.")
                 case '32': self.df = AutoMap().autoMap(self.df)
                 case '33': self.df = Modifier(self.df).run() #240120
                 case '34': ReconGL(self.df).run()
@@ -101,9 +103,15 @@ class Spotlight(ProtoABSSelector):
                 case '44': SaverSplitFrText().run() #240121 추가
 
                 case '90': breakpoint() #240119
-                case '91': self.df.info()
-                case '92': print(self.df.head(10))
-                case '93': self._head2excel()
+                case '91': 
+                    if isinstance(self.df, pd.DataFrame): self.df.info()
+                    else: print("아직 선택되지 않았습니다.")
+                case '92': 
+                    if isinstance(self.df, pd.DataFrame): print(self.df.head(10))
+                    else: print("아직 선택되지 않았습니다.")                    
+                case '93': 
+                    if isinstance(self.df, pd.DataFrame): self._head2excel()
+                    else: print("아직 선택되지 않았습니다.")                                        
                 case _: print("Retry"); continue
 
     @ErrRetryF
@@ -113,8 +121,6 @@ class Spotlight(ProtoABSSelector):
 def run(): 
     spot = Spotlight()
     spot.run()
-
-
 
 if __name__=="__main__":
     run()

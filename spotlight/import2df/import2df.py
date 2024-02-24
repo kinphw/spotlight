@@ -11,12 +11,13 @@ from spotlight.common.common import mapcount
 
 class Import2Df:    
 
-    def run(self, msg:str = "") -> pd.DataFrame:
+    def run(self, msg:str = "") -> pd.DataFrame | None:
         
         help = "1. import txt\n"
         help += "2. import parquet\n"
         help += "3. import pickle\n"
-        help += "4. import Excel\n"        
+        help += "4. import Excel\n"
+        help += "5. quit\n"      
         print(help)
         flag = input(">>")
         match(flag):
@@ -24,11 +25,13 @@ class Import2Df:
             case '2': return self._importParquet(msg)
             case '3': return self._importPickle(msg)
             case '4': return self._importExcel(msg)            
-            case _: print("Wrong"); pass
+            case '5': return None
+            case _: print("Wrong"); return None
 
     @ErrRetry
     def _importTxt(self, msg:str = "Text 파일을 선택하세요.") -> pd.DataFrame:       
         path = myfd.askopenfilename(msg)
+        print(": ",path)
         sep = input("Seperator? (기본값 \\t)>>") or '\t'
         encod = input("인코딩? (cp949)>>") or 'cp949'
         
@@ -86,8 +89,8 @@ class Import2Df:
         else:
             return pd.read_excel(path)
 
-def runImport2Df(msg:str = "") -> pd.DataFrame:
-    return Import2Df().run(msg)
+# def runImport2Df(msg:str = "") -> pd.DataFrame:
+#     return Import2Df().run(msg)
 
 if __name__=='__main__':
-    runImport2Df()
+    Import2Df().run()
