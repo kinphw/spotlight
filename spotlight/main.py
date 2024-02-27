@@ -23,10 +23,10 @@ from spotlight.common.protoSelector import ProtoABSSelector
 from spotlight.common.ErrRetry import ErrRetryF
 
 class Spotlight(ProtoABSSelector):
-    df:pd.DataFrame    
+    df:pd.DataFrame = None
     def run(self):
 
-        print(Colors.RED + "Spotlight : v0.0.741" + Colors.END)
+        print(Colors.RED + "Spotlight : v0.0.75" + Colors.END)
 
         text =  "#"*10+"\n"
         text += Colors.RED + "\nPreprocessing\n" + Colors.END

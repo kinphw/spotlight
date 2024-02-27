@@ -12,9 +12,9 @@ from spotlight.common.colors import Colors
 from spotlight.merge.setkey import SetKey
 
 class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
-    dfA:pd.DataFrame
-    dfB:pd.DataFrame
-    dfJoin:pd.DataFrame
+    dfA:pd.DataFrame = None
+    dfB:pd.DataFrame = None
+    dfJoin:pd.DataFrame = None
     #상속받은 df변수를 dfNow 성격으로 재활용함    
     flag:str #A | B | Join | NONE, 기본값 NOT
     
@@ -172,15 +172,23 @@ class Merger(ProtoABSSelector): #Inherit Modifier to use 'selectColumn'
     def _selectDF(self, flag:str = ''):
         print("Select DF...")
         if flag in ['A','B','Join']: self.flag = flag
-        else: self.flag:str = input("1> A / 2> B / 3> Join >>")
+        else:
+            while True:
+                tmp = input("1. A / 2. B / 3. Join >>")
+                match(tmp):
+                    case '1': self.flag = 'A'; break
+                    case '2': self.flag = 'B'; break
+                    case '3': self.flag = 'Join'; break
+                    case _: print("잘못 입력함"); continue
+            
         match(self.flag):
-            case '1': 
+            case 'A': 
                 if isinstance(self.dfA,pd.DataFrame): self.df = self.dfA
                 else: print("dfA not loaded yet")
-            case '2':
+            case 'B':
                 if isinstance(self.dfB,pd.DataFrame): self.df = self.dfB
                 else: print("dfB not loaded yet")
-            case '3':
+            case 'Join':
                 if isinstance(self.dfJoin,pd.DataFrame): self.df = self.dfJoin
                 else: print("dfJoin not loaded yet")            
             case _: print("잘못된 입력입니다."); return
