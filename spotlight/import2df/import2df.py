@@ -4,9 +4,10 @@ import pandas as pd
 import modin.pandas as mpd #240117
 import tqdm
 import ray
+from collections import defaultdict
 
 import spotlight.common.myFileDialog as myfd
-from spotlight.common.ErrRetry import ErrRetry
+from spotlight.common.ErrRetry import ErrRetryF
 from spotlight.common.common import mapcount
 
 class Import2Df:    
@@ -28,7 +29,7 @@ class Import2Df:
             case '5': return None
             case _: print("Wrong"); return None
 
-    @ErrRetry
+    @ErrRetryF
     def _importTxt(self, msg:str = "Text 파일을 선택하세요.") -> pd.DataFrame:       
         path = myfd.askopenfilename(msg)
         print(": ",path)
@@ -41,6 +42,9 @@ class Import2Df:
         elif flag == 'Y': bQuote = False
         else: print("선택하지 않았습니다. quote를 사용합니다."); bQuote = True
 
+        #240529
+        dtype = self._setDType()
+
         ## MODIN 활용부
         flagModin = input("USE MODIN? MODIN doesn't support chunksize (DEFAUT : N)>>") or 'N'
         
@@ -49,8 +53,10 @@ class Import2Df:
             #chunksize = 10000000 #천만
             if not ray.is_initialized(): ray.init()
             
-            if bQuote: df = mpd.read_csv(path, sep=sep, encoding=encod, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119 
-            else: df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119 
+            #if bQuote: df = mpd.read_csv(path, sep=sep, encoding=encod, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119 
+            if bQuote: df = mpd.read_csv(path, sep=sep, encoding=encod, dtype=dtype) #, low_memory=False)#, chunksize=chunksize) #240119 
+            #else: df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119
+            else: df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE, dtype=dtype) #, low_memory=False)#, chunksize=chunksize) #240119
             # for count, chunk in enumerate(dfReader):
             #     df = mpd.concat([df, chunk])
             #     pbar.update(chunk.shape[0])
@@ -61,8 +67,10 @@ class Import2Df:
             df = pd.DataFrame()        
             chunksize = 10000000 #천만
             
-            if bQuote: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, dtype='string')  #240131 #240214
-            else: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, quoting=csv.QUOTE_NONE, dtype='string')  #240131 #240214
+            #if bQuote: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, dtype='string')  #240131 #240214
+            if bQuote: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, dtype=dtype)
+            #else: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, quoting=csv.QUOTE_NONE, dtype='string')  #240131 #240214
+            else: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, quoting=csv.QUOTE_NONE, dtype=dtype)  #240131 #240214
             for count, chunk in enumerate(dfReader):
                 df = pd.concat([df, chunk])
                 pbar.update(chunk.shape[0])        
@@ -70,6 +78,25 @@ class Import2Df:
             if cnt != df.shape[0]: print("raw text rows와 dataframe records count가 상이합니다. 주의하세요.(QUOTE때문일 수 있음)") #240131
         
         return df
+
+    # 선택에 따라 dtype을 반환받아 read_csv메서드의 dtype 인수에 적용하는 함수
+    def _setDType(self) -> defaultdict | str :
+        flag:str = input("dtype을 사전 지정합니까?(1 지정하지 않음(def : string으로 처리) / 2 지정함(for sy))>>")
+        if flag == "": flag='1'
+        while True:
+            match flag:
+                case '1':
+                    return 'string'
+                case '2':
+                    return defaultdict(lambda:'string'
+                            , HKONT="int64"
+                            , WRBTR="float64"
+                            , DMBTR="float64"
+                            , BELNR="int64")
+                case _:
+                    print("잘못 입력하였습니다.")
+                    continue
+
 
     def _importParquet(self, msg:str = "Select parquet") -> pd.DataFrame:
         path = myfd.askopenfilename(msg)

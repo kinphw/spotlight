@@ -26,7 +26,7 @@ class Spotlight(ProtoABSSelector):
     df:pd.DataFrame = None
     def run(self):
 
-        print(Colors.RED + "Spotlight : v0.0.75" + Colors.END)
+        print(Colors.RED + "Spotlight : v0.0.751" + Colors.END)
 
         text =  "#"*10+"\n"
         text += Colors.RED + "\nPreprocessing\n" + Colors.END

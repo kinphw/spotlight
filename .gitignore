@@ -34,3 +34,4 @@ old/*
 !Tool/TableDef.xlsx
 *.txt
 *.csv
+*.pickle
