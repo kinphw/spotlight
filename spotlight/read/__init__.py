@@ -1,1 +1,1 @@
-from spotlight.read.read import runReadColumnLength
+from spotlight.read.read import ReadColumnLength

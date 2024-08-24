@@ -2,11 +2,11 @@
 
 ## Ver
 
-v0.0.751
+v0.0.76
 
 ## 목적
 
-Spotlight upload를 위한 정형화된 전처리 자동화
+정형화된 전처리 반자동화
 
 ## 작동방법
 
@@ -67,20 +67,25 @@ sl.run()
 * df.head(10)  
 
 ## Help
-FA&A 박형원
+박형원
 
 ## History
 
 v0.0.1 DD 231218  
-v0.0.2 DD 240117 : 추가 : 탭/개행 삭제기능, sum기능, head to excel 추출, 계정별/월별 금액 추출, Modin사용 import/export
-v0.0.3 DD 240119 : breakpoint 추가
-v0.0.4 DD 240120 : minor patch
-v0.0.5 DD 240121 : save split (text or excel) 기능추가 / DF에서 추출하거나 아니면 직접 텍스트에서 추출함
+v0.0.2 DD 240117 : 추가 : 탭/개행 삭제기능, sum기능, head to excel 추출, 계정별/월별 금액 추출, Modin사용 import/export  
+v0.0.3 DD 240119 : breakpoint 추가  
+v0.0.4 DD 240120 : minor patch  
+v0.0.5 DD 240121 : save split (text or excel) 기능추가 / DF에서 추출하거나 아니면 직접 텍스트에서 추출함  
 v0.0.6 240125 : FROM 전표금액 TO 차대금액 추가 / 차대처리시 숫자 자료형 처리가능하게 변경  
-v0.0.7 : 유일성검증기능 추가
-v0.0.71 : read_csv debug (quote)
-v0.0.72 : AUTO_MAP 취소시 loaded df 사라지는 버그 해결 / 정규식 수정 오타수정 / 비정규식 replace 기능 추가
-v0.0.73 : user-define groupby
-v0.0.732 : dtype을 기본적으로 string으로 읽는다. (데이터 손실 방지)
-v0.0.733 : data import시 quote 선택받도록 변경
-v0.0.74 : excel to tsv 연계 형변환 지원
+v0.0.7 : 유일성검증기능 추가  
+v0.0.71 : read_csv debug (quote)  
+v0.0.72 : AUTO_MAP 취소시 loaded df 사라지는 버그 해결 / 정규식 수정 오타수정 / 비정규식 replace 기능 추가  
+v0.0.73 : user-define groupby  
+v0.0.732 : dtype을 기본적으로 string으로 읽는다. (데이터 손실 방지)  
+v0.0.733 : data import시 quote 선택받도록 변경  
+v0.0.74 : excel to tsv 연계 형변환 지원  
+v0.0.76 : R의 View() 구현
+
+#View() 구현
+#테이블 추가 구현 - import 정리
+#기존테이블 상 입력도 구현 - import

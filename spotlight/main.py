@@ -1,6 +1,6 @@
 import pandas as pd
 
-from spotlight.read import runReadColumnLength
+from spotlight.read import ReadColumnLength
 from spotlight.txt2db import runTxt2Db
 from spotlight.concatText import runConcatText
 from spotlight.concatText.concatTextTest import ConcatTextTest
@@ -20,15 +20,21 @@ from spotlight.recon.uniq import UniqueValidator
 from spotlight.merge.merge import Merger
 from spotlight.common.colors import Colors
 from spotlight.common.protoSelector import ProtoABSSelector
+from spotlight.common.view import DfViewer
+
 from spotlight.common.ErrRetry import ErrRetryF
 
 class Spotlight(ProtoABSSelector):
     df:pd.DataFrame = None
     def run(self):
 
-        print(Colors.RED + "Spotlight : v0.0.751" + Colors.END)
+        print(Colors.RED + "Spotlight : v0.0.76" + Colors.END)
 
-        text =  "#"*10+"\n"
+        text =  "#"*30+"\n"
+
+        text += Colors.RED + "\nREAD TEXT\n" + Colors.END
+        text += "01. Read text to dataframe (set to self.df)\n"
+
         text += Colors.RED + "\nPreprocessing\n" + Colors.END
         text += "11. Excel to Text\n"    
         text += "12. concatenate text\n"    
@@ -41,7 +47,6 @@ class Spotlight(ProtoABSSelector):
         text += "23. Import file and Insert to DB\n"
 
         text += Colors.RED + "\nMain Run\n" + Colors.END
-        text += "31. Read text to dataframe\n"
         text += "32. Auto_MAP\n"
         text += "33. Modify mode\n"
         text += "34. To recon G/L and T/B, export SUM(AMT LC)groupby Acct\n"
@@ -59,8 +64,7 @@ class Spotlight(ProtoABSSelector):
         text += Colors.RED + "\nGeneral\n" + Colors.END
         text += "90. MANUAL HANDLING - DEBUG (USE self.df)\n"
         text += "91. df.info()\n"        
-        text += "92. df.head(10)\n"
-        text += "93. df.head(10) to_excel export\n"
+        text += "92. df.head(30) View() (like R) \n"        
 
         #####
         textMain = Colors.RED + "MAIN MODE : enter '?' to help / 'q' to exit" + Colors.END
@@ -75,20 +79,22 @@ class Spotlight(ProtoABSSelector):
                 case 'q':
                     if input("정말 종료합니까? (종료시 Y)>>") == 'Y': print("END"); break
                     else: continue                
-                case '11': print("USE VBA...(추후 연동예정)")
+
+                case '01':
+                    self.df = Import2Df().run()
+                    if self.df is None: print("선택하지 않았습니다.")
+
+                case '11': print("USE VBA (Excel2TSV.xlsb)")
                 case '12': runConcatText()
                 case '13': ConcatTextTest().run()
                 case '14': 
                     if isinstance(self.df, pd.DataFrame): self.df = Merger(self.df).run()
                     else: self.df = Merger().run()
 
-                case '21': runReadColumnLength()
+                case '21': ReadColumnLength(self.df).run()
                 case '22': print("USE mySQL")
                 case '23': runTxt2Db()
 
-                case '31':
-                    self.df = Import2Df().run()
-                    if self.df is None: print("선택하지 않았습니다.")
                 case '32': self.df = AutoMap().autoMap(self.df)
                 case '33': self.df = Modifier(self.df).run() #240120
                 case '34': ReconGL(self.df).run()
@@ -106,17 +112,20 @@ class Spotlight(ProtoABSSelector):
                 case '91': 
                     if isinstance(self.df, pd.DataFrame): self.df.info()
                     else: print("아직 선택되지 않았습니다.")
+                # case '92': 
+                #     if isinstance(self.df, pd.DataFrame): print(self.df.head(10))
+                #     else: print("아직 선택되지 않았습니다.")                    
+                # case '93': 
+                #     if isinstance(self.df, pd.DataFrame): self._head2excel()
+                #     else: print("아직 선택되지 않았습니다.")                                        
                 case '92': 
-                    if isinstance(self.df, pd.DataFrame): print(self.df.head(10))
-                    else: print("아직 선택되지 않았습니다.")                    
-                case '93': 
-                    if isinstance(self.df, pd.DataFrame): self._head2excel()
-                    else: print("아직 선택되지 않았습니다.")                                        
-                case _: print("Retry"); continue
+                    if isinstance(self.df, pd.DataFrame): DfViewer(self.df.head(30)).run()
+                    else: print("아직 선택되지 않았습니다.")          
+                case _: print("Retry"); continue                
 
-    @ErrRetryF
-    def _head2excel(self):
-        self.df.head(10).to_excel("view.xlsx") ; print("view.xlsx 추출완료")
+    # @ErrRetryF
+    # def _head2excel(self):
+    #     self.df.head(10).to_excel("view.xlsx") ; print("view.xlsx 추출완료")
 
 def run(): 
     spot = Spotlight()
