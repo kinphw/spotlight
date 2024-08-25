@@ -44,27 +44,32 @@ class DataFrameViewer:
 class DfViewer:
 
     df:pd.DataFrame
+    root:tk.Tk
     
     def __init__(self, df:pd.DataFrame):
         self.df = df
 
-    def run(self):
+    def run(self): #cnt : 조회할 행수
         
         if not self.validate(): return
 
         # 메인 애플리케이션 창 생성
-        root = tk.Tk()
-        root.title("DataFrame Viewer")
-        root.attributes('-topmost', True)
+        self.root = tk.Tk()
+        self.root.title("DataFrame Viewer")
+        self.setXY(0.8, 0.8)
+        self.root.attributes('-topmost', True)
 
         # 데이터 프레임을 표시하는 객체 생성
-        viewer = DataFrameViewer(root, self.df)
+        viewer = DataFrameViewer(self.root, self.df)
 
         # 애플리케이션 실행
-        root.mainloop()
+        self.root.mainloop()
 
     def validate(self) -> bool:
         if not isinstance(self.df, pd.DataFrame):
             print("df가 설정되지 않았습니다.")
             return False
         return True
+
+    def setXY(self, width:float, height:float) -> None:
+        self.root.geometry(f"{int(width * self.root.winfo_screenwidth())}x{int(height * self.root.winfo_screenheight())}+50+50")

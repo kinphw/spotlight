@@ -1,8 +1,8 @@
 import pandas as pd
 
 from spotlight.read import ReadColumnLength
-from spotlight.txt2db import runTxt2Db
-from spotlight.concatText import runConcatText
+from spotlight.txt2db.txt2dbWrap import Txt2DbWrapper
+from spotlight.concatText import ConcatText
 from spotlight.concatText.concatTextTest import ConcatTextTest
 from spotlight.import2df.import2df import Import2Df
 from spotlight.save.save import Saver
@@ -21,14 +21,14 @@ from spotlight.merge.merge import Merger
 from spotlight.common.colors import Colors
 from spotlight.common.protoSelector import ProtoABSSelector
 from spotlight.common.view import DfViewer
-
 from spotlight.common.ErrRetry import ErrRetryF
+from spotlight.common.const import CommonConst
 
 class Spotlight(ProtoABSSelector):
     df:pd.DataFrame = None
     def run(self):
 
-        print(Colors.RED + "Spotlight : v0.0.76" + Colors.END)
+        print(Colors.RED + "Spotlight : v"+CommonConst.VER+" "+ Colors.END)
 
         text =  "#"*30+"\n"
 
@@ -42,9 +42,9 @@ class Spotlight(ProtoABSSelector):
         text += "14. Merge or Concat Text (i.e. BSEG+BKPF) (if already set df, automatically transferred to dfA)\n"        
 
         text += Colors.RED + "\nUSE SQL\n" + Colors.END
-        text += "21. To Insert to SQL, Read columns'length\n"
-        text += "22. Create Table => with mySQL\n"
-        text += "23. Import file and Insert to DB\n"
+        # text += "21. Create Table => with mySQL\n" #21 하부기능으로 구현현
+        text += "21. Insert to DB\n"
+        text += "22. To Insert to SQL, Read columns'length(단순참고용)\n"
 
         text += Colors.RED + "\nMain Run\n" + Colors.END
         text += "32. Auto_MAP\n"
@@ -85,47 +85,60 @@ class Spotlight(ProtoABSSelector):
                     if self.df is None: print("선택하지 않았습니다.")
 
                 case '11': print("USE VBA (Excel2TSV.xlsb)")
-                case '12': runConcatText()
+                case '12': ConcatText().run()
                 case '13': ConcatTextTest().run()
                 case '14': 
                     if isinstance(self.df, pd.DataFrame): self.df = Merger(self.df).run()
                     else: self.df = Merger().run()
 
-                case '21': ReadColumnLength(self.df).run()
-                case '22': print("USE mySQL")
-                case '23': runTxt2Db()
+                case '21':
+                    if isinstance(self.df, pd.DataFrame): Txt2DbWrapper(self.df).run()
+                    else: Txt2DbWrapper().run()
 
-                case '32': self.df = AutoMap().autoMap(self.df)
-                case '33': self.df = Modifier(self.df).run() #240120
-                case '34': ReconGL(self.df).run()
-                case '35': PivotMonthAcct(self.df).run()
-                case '36': GroupbyUserDefine(self.df).run()
-                case '37': CalSum(self.df).run() #240117 추가
-                case '38': UniqueValidator(self.df).run() #240127 추가
+                case '22': ReadColumnLength(self.df).run()
 
-                case '41': Saver(self.df).run()
-                case '42': SaverPart(self.df).run()   
-                case '43': SaverSplit(self.df).run() #240121 추가
+                case '32': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    self.df = AutoMap().autoMap(self.df)
+                case '33': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    self.df = Modifier(self.df).run() #240120
+                case '34': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    ReconGL(self.df).run()
+                case '35': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    PivotMonthAcct(self.df).run()
+                case '36': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    GroupbyUserDefine(self.df).run()
+                case '37': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    CalSum(self.df).run() #240117 추가
+                case '38': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    UniqueValidator(self.df).run() #240127 추가
+
+                case '41': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    Saver(self.df).run()
+                case '42': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    SaverPart(self.df).run()   
+                case '43': 
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    SaverSplit(self.df).run() #240121 추가
                 case '44': SaverSplitFrText().run() #240121 추가
 
                 case '90': breakpoint() #240119
                 case '91': 
-                    if isinstance(self.df, pd.DataFrame): self.df.info()
-                    else: print("아직 선택되지 않았습니다.")
-                # case '92': 
-                #     if isinstance(self.df, pd.DataFrame): print(self.df.head(10))
-                #     else: print("아직 선택되지 않았습니다.")                    
-                # case '93': 
-                #     if isinstance(self.df, pd.DataFrame): self._head2excel()
-                #     else: print("아직 선택되지 않았습니다.")                                        
-                case '92': 
-                    if isinstance(self.df, pd.DataFrame): DfViewer(self.df.head(30)).run()
-                    else: print("아직 선택되지 않았습니다.")          
-                case _: print("Retry"); continue                
-
-    # @ErrRetryF
-    # def _head2excel(self):
-    #     self.df.head(10).to_excel("view.xlsx") ; print("view.xlsx 추출완료")
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    self.df.info()
+                case '92':                     
+                    if not isinstance(self.df, pd.DataFrame): print("아직 데이터가 설정되지 않았습니다."); continue
+                    DfViewer(self.df.head(30)).run()
+                case _: 
+                    print("Retry"); continue                
 
 def run(): 
     spot = Spotlight()

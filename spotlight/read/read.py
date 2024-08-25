@@ -4,6 +4,7 @@ import pandas as pd
 import spotlight.common.myFileDialog as myfd
 from spotlight.common.protoSelector import ProtoABSSelector
 from spotlight.common.view import DfViewer
+from spotlight.import2df.import2df import Import2Df
 
 class ReadColumnLength(ProtoABSSelector):    
 
@@ -14,7 +15,11 @@ class ReadColumnLength(ProtoABSSelector):
         # df = pd.read_csv(path, encoding=encoding, sep=sep, low_memory=False, dtype='string') #DEBUG.: 240211
 
         if not isinstance(self.df, pd.DataFrame):
-            print("df가 설정되지 않았습니다.")
+            print("df가 설정되지 않았습니다. df를 설정합니다.")
+            self.df = Import2Df().run()
+        
+        if self.df is None:
+            print("df가 설정되지 않았습니다. 종료합니다.")
             return
         
         df = self.df        

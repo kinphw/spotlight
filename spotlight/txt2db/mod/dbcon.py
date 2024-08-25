@@ -1,33 +1,44 @@
+from typing import Optional
 import pandas as pd
 import pymysql
 import sqlalchemy
 pymysql.install_as_MySQLdb()
-import MySQLdb    
-import pyodbc
+
 
 import spotlight.common.myFileDialog as myfd
 
 class DbCon:
 
-    def connect(cls, flag:str = 'mysql', dbName : str = 'spotlight') -> sqlalchemy.Engine:
+    objEngine:sqlalchemy.Engine
+    
+    def __init__(self):
+        self._connect()
 
-        mySQL_ID = input("ID? (DBMS)>>")
-        mySQL_PW = input("Password? (DBMS)>>")
+    def _connect(self, flag:str = 'mysql', dbName : Optional[str] = None) -> bool:
+
+        mySQL_ID:str = input("ID? (DBMS)>>")
+        mySQL_PW:str = input("Password? (DBMS)>>")
+        if dbName is not None:
+            mySQL_DB:str = dbName
+        else:
+            mySQL_DB:str = input("DB Name? (DBMS)>>")
 
         if flag=="mysql":
-            #mySQL_ID = ""
-            #mySQL_PW = ""
-            #mySQL_DB = 'spotlight'
-            mySQL_DB = dbName
             #MySQL에 연결하는 경우
             engine = sqlalchemy.create_engine("mysql+mysqldb://"+mySQL_ID+":"+mySQL_PW+"@127.0.0.1/"+mySQL_DB+"?charset=utf8")
 
         elif flag=="mssql":
             #MSSQL에 연결하는 경우
-            engine = sqlalchemy.create_engine("mssql+pyodbc://SA:qkrguddnjs1!@mymssql")
+            engine = sqlalchemy.create_engine("mssql+pyodbc://"+mySQL_ID+":"+mySQL_PW+"!@mymssql")
             #engine.connect()
         
-        engine.connect()
-        print("DB에 연결되었습니다.")
-        return engine #engine을 반환 
+        try:
+            conn = engine.connect()
+            print("DB에 연결되었습니다.")
+            self.objEngine = engine
+            return True
+        except:
+            print("DB 연결에 실패했습니다.")
+            return False
+        
 

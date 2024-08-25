@@ -24,11 +24,19 @@ class ProtoSelector:
         num = int(num) 
         cName = df.columns[num] #선택한 번호에 해당하는 컬럼명을 반환한다.
         return cName
-    
-class ProtoABSSelector(ProtoSelector, metaclass=ABCMeta):
+
+class ProtoRun(metaclass=ABCMeta):
     @abstractmethod
     def run(self):
         pass
+
+class ProtoABSSelector(ProtoSelector, ProtoRun, metaclass=ABCMeta):
+    pass
+    # @abstractmethod
+    # def run(self):
+    #     pass
+
+
 
 
 

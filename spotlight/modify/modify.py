@@ -16,6 +16,7 @@ from spotlight.modify.dropDuplicate import DropDuplicate
 from spotlight.common.colors import Colors
 from spotlight.modify.removeD import RemoveDecimal
 from spotlight.modify.excelNum import ExcelNum
+from spotlight.common.view import DfViewer
 
 class Modifier(ProtoABSSelector):
 
@@ -50,7 +51,7 @@ class Modifier(ProtoABSSelector):
         text += Colors.RED + "General\n" + Colors.END
         text += "90. DEBUG MODE (USE Self.df)\n"
         text += "98. df.info()\n"
-        text += "99. df.head(10)\n"
+        text += "99. df.View(30)\n"
         #####
         textMain = Colors.RED + "MODIFY MODE : enter '?' to help / 'q' to exit" + Colors.END
 
@@ -105,8 +106,12 @@ class Modifier(ProtoABSSelector):
                 case '26': self._addEmptyColumn()
 
                 case '90': breakpoint() #240119
-                case '98': self.df.info()
-                case '99': print(self.df.head(10))
+                case '98': 
+                    if isinstance(self.df, pd.DataFrame): self.df.info()
+                    else: print("아직 선택되지 않았습니다.")                    
+                case '99':
+                    if isinstance(self.df, pd.DataFrame): DfViewer(self.df.head(30)).run()
+                    else: print("아직 선택되지 않았습니다.")    
 
                 case _: print("Retry"); continue
 

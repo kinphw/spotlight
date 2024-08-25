@@ -25,9 +25,8 @@ sl.run()
 
 2. DF to SQL(IMPORT)
 
+* Import file and Insert to DB (a single file or multiple files in the specific folder)
 * To Insert to SQL, Read columns'length  
-* Create Table => with mySQL  
-* Import file and Insert to DB  
 
 3. MAIN RUN 
 
@@ -64,7 +63,7 @@ sl.run()
 
 * MANUAL HANDLING - DEBUG  
 * df.info()  
-* df.head(10)  
+* df.head(30) (like R's View())
 
 ## Help
 박형원
@@ -84,8 +83,4 @@ v0.0.73 : user-define groupby
 v0.0.732 : dtype을 기본적으로 string으로 읽는다. (데이터 손실 방지)  
 v0.0.733 : data import시 quote 선택받도록 변경  
 v0.0.74 : excel to tsv 연계 형변환 지원  
-v0.0.76 : R의 View() 구현
-
-#View() 구현
-#테이블 추가 구현 - import 정리
-#기존테이블 상 입력도 구현 - import
+v0.0.76 : R의 View() 구현, DB Insert 고도화

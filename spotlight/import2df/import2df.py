@@ -5,119 +5,126 @@ import modin.pandas as mpd #240117
 import tqdm
 import ray
 from collections import defaultdict
+from typing import Optional
 
 import spotlight.common.myFileDialog as myfd
 from spotlight.common.ErrRetry import ErrRetryF
 from spotlight.common.common import mapcount
+from spotlight.import2df.import2dfInfo import Import2DfInfo
 
 class Import2Df:    
 
-    def run(self, msg:str = "") -> pd.DataFrame | None:
+    objInfo:Import2DfInfo
+    msg:Optional[str]
+    path:str
+    bPBar:bool = True
+    bPreSet:bool = False #1회용이 아니라 객체를 사전설정할 경우 사용하는 bool변수. 만약 True인 경우에는 생성자에서 _setInfo()를 설정함
+
+    def __init__(self, bPBar:bool = True, bPreSet:bool = False):
+        self.objInfo = Import2DfInfo() #최초 인스턴스 생성할때 세팅. 재활용할때는 설정이 불필요
+        self.bPBar = bPBar
+        if bPreSet: 
+            self.bPreSet = True
+            if not self._setType(): return #사전설정이 필요한 경우
+            self._setInfo() #사전설정이 필요한 경우
+
+    def run(self, msg:str = None, path:Optional[str] = None) -> pd.DataFrame | None:
+        if not self.bPreSet:
+            if not self._setType(): return #생성자에서 설정했으므로 run()에서는 호출하지 않음
+
+        self._setMsg(msg)
+        self._setPath(path)
+        if self.path == '': return None #파일선택이 없으면 None 반환하여 종료       
+
+        if not self.bPreSet:            
+            self._setInfo() #생성자에서 설정했으므로 run()에서는 호출하지 않음
         
-        help = "1. import txt\n"
-        help += "2. import parquet\n"
-        help += "3. import pickle\n"
-        help += "4. import Excel\n"
-        help += "5. quit\n"      
-        print(help)
-        flag = input(">>")
-        match(flag):
-            case '1': return self._importTxt(msg)
-            case '2': return self._importParquet(msg)
-            case '3': return self._importPickle(msg)
-            case '4': return self._importExcel(msg)            
-            case '5': return None
-            case _: print("Wrong"); return None
+        return self._importWrapper() #실제 호출부
+
+    def _setMsg(self, msg:Optional[str]) -> None:
+        #msg 세팅부        
+        if msg is None: #msg가 없으면 생성
+            msg = " 파일을 선택하세요."
+            match(self.objInfo.type):
+                case Import2DfInfo.TXT: msg = "Text" + msg                
+                case Import2DfInfo.PARQUET: msg = "Parquet" + msg                
+                case Import2DfInfo.PICKLE: msg = "Pickle" + msg                
+                case Import2DfInfo.EXCEL: msg = "Excel" + msg           
+        self.msg = msg
+
+    #@ErrRetryF
+    def _setPath(self, path:Optional[str]) -> None:  #이 부분은 무조건 호출하면 다시 작동함     
+        if path is None:
+            self.path = myfd.askopenfilename(self.msg)
+        else:
+            self.path = path
+
+    def _setInfo(self):
+        self.objInfo.setInfo()
+
+    def _setType(self) -> bool: #나가기를 누르면 False, 아니면 True
+        return self.objInfo.setType()
+
+    def _importWrapper(self) -> pd.DataFrame:        
+        match(self.objInfo.type):
+            case Import2DfInfo.TXT: return self._importTxt(self.path)
+            case Import2DfInfo.PARQUET: return self._importParquet(self.path)
+            case Import2DfInfo.PICKLE: return self._importPickle(self.path)
+            case Import2DfInfo.EXCEL: return self._importExcel(self.path)            
+
+    ############################            
 
     @ErrRetryF
-    def _importTxt(self, msg:str = "Text 파일을 선택하세요.") -> pd.DataFrame:       
-        path = myfd.askopenfilename(msg)
-        print(": ",path)
-        sep = input("Seperator? (기본값 \\t)>>") or '\t'
-        encod = input("인코딩? (cp949)>>") or 'cp949'
+    def _importTxt(self, path:str, chunksize:int = 10000000) -> pd.DataFrame:    
         
-        #240215
-        flag = input("quote(\")를 사용합니까? (Y/N, 기본값 Y)")
-        if flag == 'Y': bQuote = True
-        elif flag == 'Y': bQuote = False
-        else: print("선택하지 않았습니다. quote를 사용합니다."); bQuote = True
-
-        #240529
-        dtype = self._setDType()
-
-        ## MODIN 활용부
-        flagModin = input("USE MODIN? MODIN doesn't support chunksize (DEFAUT : N)>>") or 'N'
-        
-        if flagModin =='Y': #MODIN을 쓸 때
-            #df = mpd.DataFrame()
-            #chunksize = 10000000 #천만
+        if self.objInfo.flagModin: #MODIN을 쓸 때
             if not ray.is_initialized(): ray.init()
-            
-            #if bQuote: df = mpd.read_csv(path, sep=sep, encoding=encod, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119 
-            if bQuote: df = mpd.read_csv(path, sep=sep, encoding=encod, dtype=dtype) #, low_memory=False)#, chunksize=chunksize) #240119 
-            #else: df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE, dtype='string') #, low_memory=False)#, chunksize=chunksize) #240119
-            else: df = mpd.read_csv(path, sep=sep, encoding=encod, quoting=csv.QUOTE_NONE, dtype=dtype) #, low_memory=False)#, chunksize=chunksize) #240119
-            # for count, chunk in enumerate(dfReader):
-            #     df = mpd.concat([df, chunk])
-            #     pbar.update(chunk.shape[0])
+            # if self.objInfo.bQuote:
+            #     df = mpd.read_csv(path, sep=self.objInfo.sep, encoding=self.objInfo.encod, dtype=self.objInfo.dtype, header=self.objInfo.intHeader) #, low_memory=False)#, chunksize=chunksize) #240119 
+            # else: 
+            df = mpd.read_csv(path, 
+                              sep=self.objInfo.sep, 
+                              encoding=self.objInfo.encod, 
+                              quoting=self.objInfo.intQuote, 
+                              dtype=self.objInfo.dtype, 
+                              header=self.objInfo.intHeader) #, low_memory=False)#, chunksize=chunksize) #240119
             df = df._to_pandas() #다시 pd.DataFrame으로 변경
         else:
-            cnt = mapcount(path,encod) -1 #Count Check _ Column 때문에 1을 빼야 함
-            pbar = tqdm.tqdm(total=cnt, desc='Read')        
+            cnt = mapcount(path,self.objInfo.encod) -1 #Count Check _ Column 때문에 1을 빼야 함
+            if self.bPBar: pbar = tqdm.tqdm(total=cnt, desc='Read')        
             df = pd.DataFrame()        
-            chunksize = 10000000 #천만
             
-            #if bQuote: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, dtype='string')  #240131 #240214
-            if bQuote: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, dtype=dtype)
-            #else: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, quoting=csv.QUOTE_NONE, dtype='string')  #240131 #240214
-            else: dfReader = pd.read_csv(path, sep=sep, encoding=encod, low_memory=False, chunksize=chunksize, quoting=csv.QUOTE_NONE, dtype=dtype)  #240131 #240214
+            # if self.objInfo.bQuote: 
+            #     dfReader = pd.read_csv(path, sep=self.objInfo.sep, encoding=self.objInfo.encod, low_memory=False, chunksize=chunksize, dtype=self.objInfo.dtype, header=self.objInfo.intHeader)            
+            # else: 
+            dfReader = pd.read_csv(path, 
+                                   sep=self.objInfo.sep, 
+                                   encoding=self.objInfo.encod, 
+                                   low_memory=False, 
+                                   chunksize=chunksize, 
+                                   quoting=self.objInfo.intQuote, 
+                                   dtype=self.objInfo.dtype, 
+                                   header=self.objInfo.intHeader)  #240131 #240214
             for count, chunk in enumerate(dfReader):
                 df = pd.concat([df, chunk])
-                pbar.update(chunk.shape[0])        
-            pbar.close()
+                if self.bPBar: pbar.update(chunk.shape[0])        
+            if self.bPBar: pbar.close()
             if cnt != df.shape[0]: print("raw text rows와 dataframe records count가 상이합니다. 주의하세요.(QUOTE때문일 수 있음)") #240131
-        
         return df
 
-    # 선택에 따라 dtype을 반환받아 read_csv메서드의 dtype 인수에 적용하는 함수
-    def _setDType(self) -> defaultdict | str :
-        flag:str = input("dtype을 사전 지정합니까?(1 지정하지 않음(def : string으로 처리) / 2 지정함(for sy))>>")
-        if flag == "": flag='1'
-        while True:
-            match flag:
-                case '1':
-                    return 'string'
-                case '2':
-                    return defaultdict(lambda:'string'
-                            , HKONT="int64"
-                            , WRBTR="float64"
-                            , DMBTR="float64"
-                            , BELNR="int64")
-                case _:
-                    print("잘못 입력하였습니다.")
-                    continue
-
-
-    def _importParquet(self, msg:str = "Select parquet") -> pd.DataFrame:
-        path = myfd.askopenfilename(msg)
+    def _importParquet(self, path:str) -> pd.DataFrame:       
         return pd.read_parquet(path)
 
-    def _importPickle(self, msg:str = "Select pickle") -> pd.DataFrame:
-        path = myfd.askopenfilename(msg)
+    def _importPickle(self, path:str) -> pd.DataFrame:        
         return pd.read_pickle(path)
 
-    def _importExcel(self, msg:str = "Select Excel") -> pd.DataFrame:
-        path = myfd.askopenfilename(msg)
+    def _importExcel(self, path:str) -> pd.DataFrame:
 
-        flagModin = input("USE MODIN? (DEFAUT : N)>>") or 'N'
-        if flagModin == 'Y':
+        if self.objInfo.flagModin:
             df:mpd.DataFrame = mpd.read_excel(path)
             return df._to_pandas()
         else:
             return pd.read_excel(path)
-
-# def runImport2Df(msg:str = "") -> pd.DataFrame:
-#     return Import2Df().run(msg)
 
 if __name__=='__main__':
     Import2Df().run()
