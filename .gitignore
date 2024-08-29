@@ -24,6 +24,7 @@ test.txt
 bkup/*
 logs/*
 ColumnLength.xlsx
+test/*
 
 #oldver
 old/*

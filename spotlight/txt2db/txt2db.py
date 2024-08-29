@@ -63,7 +63,7 @@ class Txt2Db(ProtoTxt2Db): #have self.df
             case("1"): self.bRealInsert = True
             case("2"): self.bRealInsert = False    
 
-    def _setDf(self) -> None:        
+    def _setDf(self) -> None:  
         if isinstance(self.df, pd.DataFrame):
             print("전달된 df를 insert합니다.")
         else:

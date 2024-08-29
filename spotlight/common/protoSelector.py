@@ -1,16 +1,16 @@
 #For inheritance
 #Class var : df
 #Class method : selectColumn
-
 from abc import ABCMeta
 from abc import abstractmethod
+from typing import Optional
 
 import pandas as pd
 
 from spotlight.common.ErrRetry import ErrRetryF
 
 class ProtoSelector:
-    df:pd.DataFrame
+    df:Optional[pd.DataFrame] = None
 
     def __init__(self, df:pd.DataFrame = None): #의존성 주입
         self.df = df
